@@ -11,7 +11,7 @@ Presentación multimedial e interactiva diseñada a modo de infografía y mapa c
 
 ## 🚀 Ver Presentación Interactiva
 Puedes acceder a la versión web interactiva desplegada en GitHub Pages:
-👉 [Ver Presentación Web]([suspicious link removed])
+👉 [Ver Presentación Web] https://ramahuc.github.io/ROADMAP-PROGRAMACION-ESTRUCTURA-DE-DATOS/
 
 ## 📚 Unidades del Recorrido
 - **Unidad 1:** Introducción al entorno Visual Studio .NET, C# y controles WinForms.
