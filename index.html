@@ -1,0 +1,2990 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="artifact-type" content="narrative">
+  <meta name="design-style" content="charter">
+  <title>Programación y Estructuras de Datos — Recorrido Curricular UAI</title>
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=Inter:wght@100..900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      color-scheme: light;
+
+      /* 1. Charter palette */
+      --background: #f7f4ec;
+      --surface-container-low: #fffdf8;
+      --surface-container: #ece5d4;
+      --surface-container-high: #e3dac4;
+
+      --on-surface: #1c1f26;
+      --on-surface-variant: #4f5360;
+
+      --outline: #b08d57;
+      --outline-variant: #d9cfb8;
+
+      --primary: #14213d;
+      --on-primary: #f7f4ec;
+      --primary-container: #e3e6ee;
+      --on-primary-container: #14213d;
+      --secondary: #2d5a4a;
+      --tertiary: #8a6a35;
+      --error: #9b2c2c;
+      --on-error: #f7f4ec;
+
+      --data-1: #14213d;
+      --data-2: #8a6a35;
+      --data-3: #2d5a4a;
+      --data-4: #5b7aa0;
+      --data-context: #c2bba9;
+
+      /* Fonts */
+      --font-headline: 'Libre Caslon Text', serif;
+      --font-body: 'Inter', sans-serif;
+      --font-label: 'Inter', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+
+      /* Shape */
+      --rounded: 0.125rem;
+      --rounded-lg: 0.125rem;
+      --rounded-full: 0.125rem;
+
+      /* Style effects */
+      --brass-rule: 2px solid var(--outline);
+      --hairline: 1px solid var(--outline-variant);
+      --leaf-underline: 0 1px 0 var(--outline-variant);
+
+      /* 2. Extended semantic and surface tokens */
+      --positive: #2d5a4a;
+      --warning: #8a6a35;
+      --focus: #14213d;
+
+      --brass-on-navy: #d5be96;
+      --lede-on-navy: #d6dce6;
+      --navy-rule: #2e3f63;
+      --navy-panel: #1b2c4e;
+      --positive-surface: #e6f0ec;
+      --warning-surface: #f5eedc;
+      --error-surface: #f7e6e6;
+      --slate-surface: #eef1f6;
+
+      /* 3. Type scale (Narrative) */
+      --display-size: clamp(2.25rem, 1.35rem + 3.4vw, 3.85rem);
+      --headline-size: clamp(1.65rem, 1.15rem + 1.8vw, 2.35rem);
+      --subhead-size: clamp(1.15rem, 1.02rem + 0.5vw, 1.375rem);
+      --body-size: clamp(1rem, 0.96rem + 0.2vw, 1.0625rem);
+      --label-size: clamp(0.75rem, 0.72rem + 0.12vw, 0.8125rem);
+      --mono-size: 0.84rem;
+
+      /* Spacing scale (4pt base) */
+      --space-xs: 0.25rem;
+      --space-sm: 0.5rem;
+      --space-md: 1rem;
+      --space-lg: 1.5rem;
+      --space-xl: 2.5rem;
+      --space-2xl: 4rem;
+      --space-3xl: 5.5rem;
+
+      /* Motion */
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+      --dur-micro: 120ms;
+      --dur-short: 220ms;
+      --dur-long: 420ms;
+    }
+
+    /* Base reset */
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    html, body { overflow-x: clip; margin: 0; padding: 0; }
+    header { position: static !important; }
+
+    body {
+      background-color: var(--background);
+      color: var(--on-surface);
+      font-family: var(--font-body);
+      font-size: var(--body-size);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    button, input, select, textarea {
+      font-family: inherit;
+    }
+
+    :focus-visible {
+      outline: 2px solid var(--focus);
+      outline-offset: 2px;
+    }
+
+    .title-band :focus-visible {
+      outline-color: var(--brass-on-navy);
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    /* Container & grid */
+    .page-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--space-2xl);
+      padding: var(--space-xl) var(--space-lg) var(--space-3xl);
+      max-width: 1220px;
+      margin: 0 auto;
+    }
+    .page-grid * { min-width: 0; }
+
+    .container-inner {
+      max-width: 1220px;
+      margin: 0 auto;
+      padding: 0 var(--space-lg);
+    }
+
+    /* 1. Institutional Cover (Navy Title Band) */
+    .title-band {
+      background-color: var(--primary);
+      color: var(--on-primary);
+      border-bottom: 3px solid var(--outline);
+      padding: var(--space-2xl) 0 var(--space-xl);
+    }
+
+    .cover-kicker {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--brass-on-navy);
+      margin: 0 0 var(--space-md);
+      padding-bottom: var(--space-sm);
+      border-bottom: 1px solid var(--navy-rule);
+    }
+
+    .title-band h1 {
+      font-family: var(--font-headline);
+      font-weight: 400;
+      font-size: var(--display-size);
+      line-height: 1.08;
+      letter-spacing: -0.01em;
+      color: var(--on-primary);
+      margin: 0 0 var(--space-md);
+      max-width: 22ch;
+    }
+
+    .title-band .lede {
+      font-size: clamp(1.05rem, 1rem + 0.35vw, 1.25rem);
+      line-height: 1.55;
+      color: var(--lede-on-navy);
+      max-width: 64ch;
+      margin: 0 0 var(--space-xl);
+    }
+
+    .cover-meta-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
+      gap: var(--space-md);
+      border-top: 1px solid var(--outline);
+      padding-top: var(--space-lg);
+    }
+
+    .cover-meta-cell {
+      background-color: var(--navy-panel);
+      border-top: 2px solid var(--brass-on-navy);
+      padding: var(--space-md);
+      border-radius: var(--rounded);
+    }
+
+    .cover-meta-label {
+      display: block;
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--brass-on-navy);
+      margin-bottom: var(--space-xs);
+    }
+
+    .cover-meta-value {
+      display: block;
+      font-family: var(--font-headline);
+      font-weight: 400;
+      font-size: 1.15rem;
+      line-height: 1.3;
+      color: var(--on-primary);
+    }
+
+    /* Typography helpers */
+    .kicker-label {
+      display: block;
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--tertiary);
+      margin-bottom: var(--space-xs);
+    }
+
+    .section-head {
+      border-top: var(--brass-rule);
+      padding-top: var(--space-md);
+      border-bottom: var(--hairline);
+      padding-bottom: var(--space-md);
+      margin-bottom: var(--space-lg);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: var(--space-md);
+    }
+
+    .section-head-main {
+      max-width: 68ch;
+    }
+
+    .section-head h2 {
+      font-family: var(--font-headline);
+      font-weight: 400;
+      font-size: var(--headline-size);
+      line-height: 1.14;
+      letter-spacing: -0.01em;
+      color: var(--on-surface);
+      margin: 0 0 var(--space-xs);
+    }
+
+    .section-deck {
+      margin: 0;
+      color: var(--on-surface-variant);
+      font-size: var(--body-size);
+      max-width: 65ch;
+    }
+
+    .ra-badge {
+      display: inline-block;
+      border: 1px solid var(--outline);
+      background-color: var(--surface-container-low);
+      color: var(--tertiary);
+      font-family: var(--font-mono);
+      font-size: var(--label-size);
+      font-weight: 500;
+      padding: var(--space-xs) var(--space-sm);
+      border-radius: var(--rounded);
+      white-space: nowrap;
+    }
+
+    h3 {
+      font-family: var(--font-headline);
+      font-weight: 700;
+      font-size: var(--subhead-size);
+      line-height: 1.25;
+      color: var(--on-surface);
+      margin: 0 0 var(--space-sm);
+    }
+
+    h4 {
+      font-family: var(--font-body);
+      font-weight: 600;
+      font-size: 1rem;
+      line-height: 1.35;
+      color: var(--primary);
+      margin: 0 0 var(--space-xs);
+    }
+
+    p {
+      margin: 0 0 var(--space-md);
+      max-width: 68ch;
+    }
+
+    /* Figure Cards (Charter treatment #3 & #4) */
+    .figures-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
+      gap: var(--space-md);
+      margin-bottom: var(--space-xl);
+    }
+
+    .figure-card {
+      background-color: var(--surface-container-low);
+      border-top: var(--brass-rule);
+      box-shadow: var(--leaf-underline);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-md) var(--space-lg);
+    }
+
+    .figure-label {
+      display: block;
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--on-surface-variant);
+      margin-bottom: var(--space-xs);
+    }
+
+    .figure-value {
+      display: block;
+      font-family: var(--font-headline);
+      font-weight: 400;
+      font-size: clamp(1.85rem, 1.5rem + 1vw, 2.35rem);
+      line-height: 1.1;
+      font-variant-numeric: tabular-nums lining-nums;
+      color: var(--on-surface);
+    }
+
+    .figure-delta {
+      display: block;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--tertiary);
+      margin-top: var(--space-xs);
+    }
+
+    .figure-delta.positive {
+      color: var(--secondary);
+    }
+
+    /* Roadmap / 6 Milestones Strip */
+    .roadmap-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
+      gap: var(--space-md);
+    }
+
+    .milestone-link {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: var(--space-sm);
+      text-decoration: none;
+      background-color: var(--surface-container-low);
+      border-top: var(--brass-rule);
+      border-right: var(--hairline);
+      border-bottom: var(--hairline);
+      border-left: var(--hairline);
+      padding: var(--space-md) var(--space-lg);
+      border-radius: var(--rounded);
+      color: var(--on-surface);
+      transition: background-color var(--dur-micro) var(--ease-out), border-color var(--dur-micro) var(--ease-out);
+    }
+
+    .milestone-link:hover {
+      background-color: var(--primary-container);
+      border-top-color: var(--primary);
+    }
+
+    .milestone-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: var(--space-sm);
+    }
+
+    .milestone-num {
+      font-family: var(--font-mono);
+      font-size: var(--label-size);
+      font-weight: 600;
+      color: var(--tertiary);
+      letter-spacing: 0.05em;
+    }
+
+    .milestone-ra {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--secondary);
+    }
+
+    .milestone-title {
+      font-family: var(--font-headline);
+      font-weight: 700;
+      font-size: 1.125rem;
+      line-height: 1.25;
+      color: var(--primary);
+    }
+
+    .milestone-desc {
+      font-size: 0.92rem;
+      color: var(--on-surface-variant);
+      line-height: 1.45;
+    }
+
+    .milestone-cta {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--primary);
+      text-decoration: underline;
+      text-decoration-color: var(--outline);
+      text-underline-offset: 3px;
+    }
+
+    /* Unit Sections & Asymmetric Grids */
+    .unit-section {
+      scroll-margin-top: var(--space-lg);
+    }
+
+    .unit-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+      gap: var(--space-xl);
+      align-items: start;
+    }
+
+    .unit-layout-reverse {
+      display: grid;
+      grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+      gap: var(--space-xl);
+      align-items: start;
+    }
+
+    .prose-stack {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-lg);
+    }
+
+    .concept-block {
+      border-left: 2px solid var(--outline-variant);
+      padding-left: var(--space-md);
+    }
+
+    .concept-block ul {
+      margin: var(--space-xs) 0 0;
+      padding-left: 1.25rem;
+    }
+
+    .concept-block li {
+      margin-bottom: var(--space-xs);
+    }
+
+    /* Callout & Notes */
+    .callout-note {
+      background-color: var(--surface-container-low);
+      border-top: var(--brass-rule);
+      border-bottom: var(--hairline);
+      padding: var(--space-md) var(--space-lg);
+      border-radius: var(--rounded);
+    }
+
+    .callout-note.sage {
+      background-color: var(--positive-surface);
+      border-top-color: var(--secondary);
+    }
+
+    /* Code blocks (light paper + navy spine, Charter compliant) */
+    .code-panel {
+      background-color: var(--surface-container-low);
+      border: var(--hairline);
+      border-left: 3px solid var(--primary);
+      border-radius: var(--rounded);
+      padding: var(--space-md);
+      overflow-x: auto;
+    }
+
+    .code-caption {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--on-surface-variant);
+      margin-bottom: var(--space-sm);
+      display: block;
+    }
+
+    pre {
+      margin: 0;
+      font-family: var(--font-mono);
+      font-size: var(--mono-size);
+      line-height: 1.5;
+      color: var(--on-surface);
+      white-space: pre;
+    }
+
+    code {
+      font-family: var(--font-mono);
+      font-size: 0.9em;
+      background-color: var(--surface-container);
+      padding: 0.08em 0.32em;
+      border-radius: var(--rounded);
+    }
+
+    pre code {
+      background-color: transparent;
+      padding: 0;
+    }
+
+    /* Tables (Charter style) */
+    .table-wrap {
+      overflow-x: auto;
+      background-color: var(--surface-container-low);
+      border-top: var(--brass-rule);
+      box-shadow: var(--leaf-underline);
+      margin: var(--space-md) 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.92rem;
+    }
+
+    thead th {
+      background-color: var(--surface-container-high);
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--on-surface);
+      text-align: left;
+      padding: var(--space-sm) var(--space-md);
+      border-bottom: var(--hairline);
+    }
+
+    tbody td {
+      padding: var(--space-sm) var(--space-md);
+      border-bottom: var(--hairline);
+      vertical-align: top;
+      color: var(--on-surface);
+    }
+
+    tbody tr:hover {
+      background-color: var(--surface-container);
+    }
+
+    .num-col {
+      text-align: right;
+      font-family: var(--font-mono);
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Interactive Lab Panels */
+    .lab-panel {
+      background-color: var(--surface-container-low);
+      border-top: var(--brass-rule);
+      border-right: var(--hairline);
+      border-bottom: var(--hairline);
+      border-left: var(--hairline);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-lg);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+      container-type: inline-size;
+    }
+
+    .lab-header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: var(--space-sm);
+      border-bottom: var(--hairline);
+      padding-bottom: var(--space-sm);
+    }
+
+    .lab-title {
+      font-family: var(--font-headline);
+      font-weight: 700;
+      font-size: 1.15rem;
+      color: var(--primary);
+      margin: 0;
+    }
+
+    /* Buttons & Inputs */
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+      align-items: flex-end;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-xs);
+      min-height: 44px;
+      padding: 0 var(--space-md);
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      border-radius: var(--rounded);
+      cursor: pointer;
+      border: 1px solid var(--primary);
+      transition: background-color var(--dur-micro) var(--ease-out), color var(--dur-micro) var(--ease-out);
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .btn-primary {
+      background-color: var(--primary);
+      color: var(--on-primary);
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      background-color: var(--navy-panel);
+    }
+
+    .btn-secondary {
+      background-color: transparent;
+      color: var(--primary);
+    }
+
+    .btn-secondary:hover:not(:disabled) {
+      background-color: var(--primary-container);
+    }
+
+    .btn-secondary.active {
+      background-color: var(--primary);
+      color: var(--on-primary);
+    }
+
+    .btn-danger {
+      background-color: transparent;
+      color: var(--error);
+      border-color: var(--error);
+    }
+
+    .btn-danger:hover:not(:disabled) {
+      background-color: var(--error-surface);
+    }
+
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+      flex: 1 1 160px;
+    }
+
+    .field-label {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--on-surface-variant);
+    }
+
+    .field-input, .field-select {
+      min-height: 44px;
+      padding: var(--space-sm) var(--space-md);
+      background-color: var(--surface-container-low);
+      border: 1px solid var(--outline-variant);
+      border-radius: var(--rounded);
+      color: var(--on-surface);
+      font-size: 0.95rem;
+    }
+
+    .field-select {
+      padding-right: var(--space-xl);
+    }
+
+    .field-input:focus, .field-select:focus {
+      border-color: var(--primary);
+    }
+
+    /* Interactive specific widgets */
+    .winform-canvas {
+      background-color: var(--background);
+      border: var(--hairline);
+      padding: var(--space-md);
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: var(--space-md);
+    }
+
+    .winform-surface {
+      background-color: var(--surface-container-low);
+      border: 1px solid var(--outline-variant);
+      padding: var(--space-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+    }
+
+    .winform-titlebar {
+      background-color: var(--surface-container);
+      border-bottom: var(--hairline);
+      padding: var(--space-xs) var(--space-sm);
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      color: var(--on-surface);
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 18px;
+      background-color: var(--surface-container);
+      border: 1px solid var(--outline-variant);
+      border-radius: var(--rounded);
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background-color: var(--secondary);
+      transition: width var(--dur-short) var(--ease-out);
+    }
+
+    .status-banner {
+      padding: var(--space-sm) var(--space-md);
+      border-left: 3px solid var(--primary);
+      background-color: var(--slate-surface);
+      font-size: 0.9rem;
+      color: var(--on-surface);
+    }
+
+    .status-banner.ok {
+      border-left-color: var(--secondary);
+      background-color: var(--positive-surface);
+      color: var(--secondary);
+    }
+
+    .status-banner.err {
+      border-left-color: var(--error);
+      background-color: var(--error-surface);
+      color: var(--error);
+    }
+
+    .status-banner.warn {
+      border-left-color: var(--tertiary);
+      background-color: var(--warning-surface);
+      color: var(--tertiary);
+    }
+
+    /* SVG stage containers */
+    .viz-stage {
+      background-color: var(--background);
+      border: var(--hairline);
+      padding: var(--space-md);
+      min-height: 220px;
+      overflow-x: auto;
+    }
+
+    .viz-stage svg {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    /* Call stack frames (Recursion) */
+    .stack-frames {
+      display: flex;
+      flex-direction: column-reverse;
+      gap: var(--space-xs);
+      min-height: 210px;
+      background-color: var(--background);
+      border: var(--hairline);
+      padding: var(--space-md);
+      justify-content: flex-start;
+    }
+
+    .stack-frame {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: var(--space-sm) var(--space-md);
+      background-color: var(--surface-container-low);
+      border: 1px solid var(--outline-variant);
+      border-left: 3px solid var(--primary);
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+    }
+
+    .stack-frame.base-case {
+      border-left-color: var(--secondary);
+      background-color: var(--positive-surface);
+    }
+
+    .stack-frame.returning {
+      border-left-color: var(--tertiary);
+      background-color: var(--warning-surface);
+    }
+
+    /* File disk blocks (Unit 4) */
+    .disk-track {
+      display: grid;
+      grid-template-columns: repeat(8, minmax(72px, 1fr));
+      gap: var(--space-xs);
+      overflow-x: auto;
+      padding-bottom: var(--space-xs);
+    }
+
+    .disk-cell {
+      background-color: var(--surface-container-low);
+      border: 1px solid var(--outline-variant);
+      padding: var(--space-sm);
+      text-align: left;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      transition: background-color var(--dur-micro) var(--ease-out);
+    }
+
+    .disk-cell.scanned {
+      background-color: var(--warning-surface);
+      border-color: var(--tertiary);
+    }
+
+    .disk-cell.target {
+      background-color: var(--positive-surface);
+      border: 2px solid var(--secondary);
+    }
+
+    /* Unit 5 File Matching tables */
+    .dual-file-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr));
+      gap: var(--space-md);
+    }
+
+    .row-active {
+      background-color: var(--primary-container) !important;
+      font-weight: 600;
+    }
+
+    .row-done {
+      color: var(--on-surface-variant);
+      opacity: 0.72;
+    }
+
+    .console-out {
+      background-color: var(--background);
+      border: var(--hairline);
+      border-left: 3px solid var(--secondary);
+      padding: var(--space-md);
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      line-height: 1.55;
+      min-height: 130px;
+      max-height: 240px;
+      overflow-y: auto;
+    }
+
+    /* Unit 6 Logic Backtracking tree */
+    .logic-steps {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+      min-height: 180px;
+      background-color: var(--background);
+      border: var(--hairline);
+      padding: var(--space-md);
+    }
+
+    .logic-row {
+      padding: var(--space-xs) var(--space-sm);
+      border-left: 3px solid var(--outline-variant);
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      background-color: var(--surface-container-low);
+    }
+
+    .logic-row.ok {
+      border-left-color: var(--secondary);
+      background-color: var(--positive-surface);
+    }
+
+    .logic-row.fail {
+      border-left-color: var(--error);
+      background-color: var(--error-surface);
+    }
+
+    .logic-row.back {
+      border-left-color: var(--tertiary);
+      background-color: var(--warning-surface);
+    }
+
+    /* Unit Footer Nav */
+    .unit-footer-nav {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--space-md);
+      margin-top: var(--space-xl);
+      padding-top: var(--space-md);
+      border-top: var(--hairline);
+      font-size: 0.9rem;
+    }
+
+    .unit-footer-nav a {
+      color: var(--primary);
+      font-weight: 500;
+      text-decoration: underline;
+      text-decoration-color: var(--outline);
+      text-underline-offset: 3px;
+    }
+
+    .unit-footer-nav a:hover {
+      text-decoration-thickness: 2px;
+    }
+
+    /* Page Footer */
+    .page-footer {
+      background-color: var(--surface-container);
+      border-top: var(--brass-rule);
+      padding: var(--space-xl) 0;
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+      gap: var(--space-xl);
+      align-items: start;
+    }
+
+    /* Container queries */
+    @container (max-width: 580px) {
+      .winform-canvas {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Responsive breakpoints */
+    @media (max-width: 900px) {
+      .unit-layout, .unit-layout-reverse, .footer-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    @media (max-width: 640px) {
+      .page-grid {
+        padding: var(--space-lg) var(--space-md) var(--space-2xl);
+        gap: var(--space-xl);
+      }
+      .container-inner {
+        padding: 0 var(--space-md);
+      }
+      .title-band {
+        padding: var(--space-xl) 0 var(--space-lg);
+      }
+      .lab-panel {
+        padding: var(--space-md);
+      }
+    }
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- CARÁTULA INSTITUCIONAL -->
+  <header class="title-band" id="caratula">
+    <div class="container-inner">
+      <p class="cover-kicker">Universidad Abierta Interamericana · Facultad de Tecnología Informática</p>
+      <h1>Programación y Estructuras de Datos</h1>
+      <p class="lede">
+        Presentación multimedial interactiva del recorrido académico a través de las seis unidades de la asignatura: desde la programación visual orientada a eventos en C# (.NET) hasta las estructuras dinámicas, árboles, procesamiento de archivos y paradigmas de programación.
+      </p>
+
+      <div class="cover-meta-grid" role="region" aria-label="Datos institucionales">
+        <div class="cover-meta-cell">
+          <span class="cover-meta-label">Alumno</span>
+          <span class="cover-meta-value">Ramiro Pedro Huczuk</span>
+        </div>
+        <div class="cover-meta-cell">
+          <span class="cover-meta-label">Universidad</span>
+          <span class="cover-meta-value">Universidad Abierta Interamericana</span>
+        </div>
+        <div class="cover-meta-cell">
+          <span class="cover-meta-label">Materia</span>
+          <span class="cover-meta-value">Programación y Estructuras de Datos</span>
+        </div>
+        <div class="cover-meta-cell">
+          <span class="cover-meta-label">Estructura del Recorrido</span>
+          <span class="cover-meta-value">6 Unidades · 3 Resultados de Aprendizaje</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="page-grid">
+
+    <!-- VISIÓN GENERAL Y MAPA DE HITOS -->
+    <section id="mapa-recorrido" aria-labelledby="heading-mapa">
+      <div class="section-head">
+        <div class="section-head-main">
+          <span class="kicker-label">Arquitectura Curricular</span>
+          <h2 id="heading-mapa">Mapa del recorrido por las seis unidades</h2>
+          <p class="section-deck">
+            La materia articula tres resultados de aprendizaje complementarios: la construcción de interfaces gráficas orientadas a eventos (RA3), la manipulación dinámica de memoria mediante Tipos de Datos Abstractos en C# (RA1) y la persistencia secuencial con corte de control y apareo (RA2).
+          </p>
+        </div>
+      </div>
+
+      <div class="figures-row">
+        <div class="figure-card">
+          <span class="figure-label">Hitos temáticos</span>
+          <span class="figure-value">06</span>
+          <span class="figure-delta">Unidades integradas en C# .NET</span>
+        </div>
+        <div class="figure-card">
+          <span class="figure-label">Resultados de aprendizaje</span>
+          <span class="figure-value">03</span>
+          <span class="figure-delta positive">RA1 · RA2 · RA3 transversales</span>
+        </div>
+        <div class="figure-card">
+          <span class="figure-label">Estructuras dinámicas</span>
+          <span class="figure-value">06</span>
+          <span class="figure-delta">Pila, Cola, 3 Listas y Árboles</span>
+        </div>
+        <div class="figure-card">
+          <span class="figure-label">Paradigmas analizados</span>
+          <span class="figure-value">04</span>
+          <span class="figure-delta">Estructurado, Eventos, POO, Lógico</span>
+        </div>
+      </div>
+
+      <nav class="roadmap-grid" aria-label="Índice interactivo de unidades">
+        <a class="milestone-link" href="#unidad-1">
+          <div class="milestone-top">
+            <span class="milestone-num">HITO 01 · UNIDAD 1</span>
+            <span class="milestone-ra">RA3</span>
+          </div>
+          <div class="milestone-title">Introducción a la Programación Visual .NET</div>
+          <div class="milestone-desc">System.Object, tipos valor/referencia, IDE Visual Studio, jerarquía Control, formularios, propiedades y eventos en WinForms.</div>
+          <span class="milestone-cta">Explorar Unidad 1 →</span>
+        </a>
+
+        <a class="milestone-link" href="#unidad-2">
+          <div class="milestone-top">
+            <span class="milestone-num">HITO 02 · UNIDAD 2</span>
+            <span class="milestone-ra">RA1</span>
+          </div>
+          <div class="milestone-title">Estructuras de Datos Dinámicas</div>
+          <div class="milestone-desc">TDA, nodos y punteros, recursividad y pila de llamadas, pilas (LIFO), colas (FIFO) y listas simples, dobles y circulares.</div>
+          <span class="milestone-cta">Explorar Unidad 2 →</span>
+        </a>
+
+        <a class="milestone-link" href="#unidad-3">
+          <div class="milestone-top">
+            <span class="milestone-num">HITO 03 · UNIDAD 3</span>
+            <span class="milestone-ra">RA1 · RA2 · RA3</span>
+          </div>
+          <div class="milestone-title">Estructuras Dinámicas II — Árboles</div>
+          <div class="milestone-desc">Anatomía, altura y equilibrio, árboles binarios de búsqueda, árboles AVL y B, y recorridos preorden, inorden y postorden.</div>
+          <span class="milestone-cta">Explorar Unidad 3 →</span>
+        </a>
+
+        <a class="milestone-link" href="#unidad-4">
+          <div class="milestone-top">
+            <span class="milestone-num">HITO 04 · UNIDAD 4</span>
+            <span class="milestone-ra">RA2</span>
+          </div>
+          <div class="milestone-title">Archivos y Persistencia</div>
+          <div class="milestone-desc">Persistencia en disco, clasificación de archivos por tipo, organización y acceso; creación, grabación, lectura y recorrido.</div>
+          <span class="milestone-cta">Explorar Unidad 4 →</span>
+        </a>
+
+        <a class="milestone-link" href="#unidad-5">
+          <div class="milestone-top">
+            <span class="milestone-num">HITO 05 · UNIDAD 5</span>
+            <span class="milestone-ra">RA2</span>
+          </div>
+          <div class="milestone-title">Corte de Control y Apareo de Archivos</div>
+          <div class="milestone-desc">Procesamiento secuencial ordenado por claves jerárquicas, acumulación por niveles y cruce de archivos por clave común.</div>
+          <span class="milestone-cta">Explorar Unidad 5 →</span>
+        </a>
+
+        <a class="milestone-link" href="#unidad-6">
+          <div class="milestone-top">
+            <span class="milestone-num">HITO 06 · UNIDAD 6</span>
+            <span class="milestone-ra">RA1 · RA2 · RA3</span>
+          </div>
+          <div class="milestone-title">Estilos y Paradigmas de Programación</div>
+          <div class="milestone-desc">Paradigma estructurado, orientado a eventos, orientado a objetos (herencia, polimorfismo, encapsulamiento) y lógico (backtracking y fail).</div>
+          <span class="milestone-cta">Explorar Unidad 6 →</span>
+        </a>
+      </nav>
+    </section>
+
+    <!-- ================================================================
+         UNIDAD 1: INTRODUCCIÓN A LA PROGRAMACIÓN VISUAL .NET
+         ================================================================ -->
+    <section class="unit-section" id="unidad-1" aria-labelledby="heading-u1">
+      <div class="section-head">
+        <div class="section-head-main">
+          <span class="kicker-label">Hito 01 · Unidad 1</span>
+          <h2 id="heading-u1">Introducción a la Programación Visual .NET</h2>
+          <p class="section-deck">
+            Transición desde la consola hacia aplicaciones de escritorio en C# sobre .NET Framework, comprendiendo la arquitectura común de los controles de usuario, las propiedades de estado y el flujo dirigido por eventos.
+          </p>
+        </div>
+        <span class="ra-badge">Resultado: RA3 (Programación gráfica)</span>
+      </div>
+
+      <div class="unit-layout">
+        <div class="prose-stack">
+          <div class="concept-block">
+            <h3>1. Fundamentos de .NET, tipos y colecciones</h3>
+            <p>
+              Todo tipo en .NET hereda directa o indirectamente de <code>System.Object</code> (con sus métodos base <code>ToString()</code>, <code>Equals()</code>, <code>GetHashCode()</code> y <code>GetType()</code>). La distinción entre <strong>tipos por valor</strong> (almacenados directamente en memoria) y <strong>tipos por referencia</strong> (variables que apuntan a instancias en memoria dinámica, junto con los procesos de <em>boxing</em> y <em>unboxing</em>) sustenta el trabajo con objetos y formularios.
+            </p>
+            <ul>
+              <li><strong>Cadenas y formatos:</strong> métodos de <code>System.String</code> (<code>Length</code>, subcadenas, comparación) y formateo de números y fechas con <code>DateTime</code> (<code>ToShortDateString()</code>, <code>ToLongDateString()</code>, <code>AddDays()</code>).</li>
+              <li><strong>Matrices y colecciones clásicas:</strong> arreglos basados y no basados en cero, junto a estructuras del espacio <code>System.Collections</code>: <code>BitArray</code>, <code>Stack</code>, <code>Queue</code>, <code>ArrayList</code>, <code>Hashtable</code>, <code>SortedList</code>, <code>StringCollection</code> y <code>StringDictionary</code>.</li>
+            </ul>
+          </div>
+
+          <div class="concept-block">
+            <h3>2. El entorno Visual Studio y anatomía de un proyecto WinForms</h3>
+            <p>
+              Una <strong>Solución</strong> agrupa uno o más <strong>Proyectos</strong> compilables. Al crear una aplicación de Windows Forms en C#, el entorno genera <code>Program.cs</code> —donde reside el punto de entrada <code>Main()</code> que invoca <code>Application.Run(new Form...)</code>— y los archivos de cada formulario, que poseen dos vistas sincronizadas: el <strong>Diseñador gráfico</strong> y la <strong>Vista de código</strong> (<code>partial class</code> con su constructor e <code>InitializeComponent()</code>).
+            </p>
+            <ul>
+              <li><strong>Arquitectura avanzada de formularios:</strong> encapsulamiento, creación de menús, formularios <strong>MDI</strong> (<em>Multiple Document Interface</em>), herencia de formularios y manejo de los objetos <code>Application</code>, <code>Cursor</code>, <code>SendKeys</code> y <code>Help</code>.</li>
+              <li><strong>Depuración:</strong> uso de puntos de interrupción (<em>breakpoints</em>) y ejecución paso a paso sobre los compilados en <code>bin/Debug</code>.</li>
+            </ul>
+          </div>
+
+          <div class="concept-block">
+            <h3>3. La abstracción Control: propiedades, métodos y eventos</h3>
+            <p>
+              Todos los componentes visuales —incluidos los propios formularios— derivan jerárquicamente de la abstracción <code>Control</code> dentro de <code>System.Windows.Forms</code>. Cada control combina tres dimensiones: <strong>Propiedades</strong> (variables de estado como <code>Name</code>, <code>Text</code>, <code>BackColor</code>, <code>Visible</code>, <code>WindowState</code>), <strong>Comportamiento</strong> (métodos como <code>Show()</code>, <code>Start()</code>, <code>Stop()</code>) y <strong>Eventos</strong> (reacciones ante el usuario o el sistema como <code>Click</code>, <code>Load</code>, <code>FormClosing</code>, <code>ValueChanged</code> o <code>Tick</code>).
+            </p>
+          </div>
+        </div>
+
+        <!-- MÓDULO INTERACTIVO UNIDAD 1 -->
+        <aside class="lab-panel" aria-label="Simulador de controles y eventos WinForms">
+          <div class="lab-header">
+            <h3 class="lab-title">Laboratorio WinForms: Propiedades y Eventos</h3>
+            <span class="ra-badge">Simulador C#</span>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label" for="u1-control-select">Seleccionar escenario de control</label>
+            <select class="field-select" id="u1-control-select" onchange="u1SelectScenario(this.value)">
+              <option value="saludo">TextBox + Button + Validación (Click)</option>
+              <option value="progreso">NumericUpDown + ProgressBar (ValueChanged)</option>
+              <option value="timer">Timer + ProgressBar (Tick en milisegundos)</option>
+              <option value="fecha">DateTimePicker + RadioButton (Manipulación de fechas)</option>
+            </select>
+          </div>
+
+          <div class="winform-canvas">
+            <div class="winform-surface">
+              <div class="winform-titlebar">
+                <span id="u1-form-caption">frmInicial.cs [Diseño]</span>
+                <span>WinForms</span>
+              </div>
+              <div id="u1-interactive-stage"></div>
+            </div>
+
+            <div class="winform-surface">
+              <div class="winform-titlebar">
+                <span>Ventana de Propiedades</span>
+                <span>System.Windows.Forms</span>
+              </div>
+              <div id="u1-props-view"></div>
+            </div>
+          </div>
+
+          <div id="u1-event-log" class="status-banner" aria-live="polite">
+            Esperando interacción del usuario para disparar un evento…
+          </div>
+
+          <div class="code-panel">
+            <span class="code-caption">Código C# asociado al evento activo</span>
+            <pre><code id="u1-code-view"></code></pre>
+          </div>
+        </aside>
+      </div>
+
+      <!-- Tabla resumen de controles de la Unidad 1 -->
+      <div class="table-wrap" aria-label="Catálogo de controles estudiados en la Unidad 1">
+        <table>
+          <thead>
+            <tr>
+              <th>Control / Componente</th>
+              <th>Propiedades clave</th>
+              <th>Evento por defecto / principal</th>
+              <th>Uso característico en WinForms</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>Form</code></td>
+              <td><code>Name</code>, <code>Text</code>, <code>BackColor</code>, <code>WindowState</code></td>
+              <td><code>Load</code>, <code>FormClosing</code>, <code>FormClosed</code></td>
+              <td>Ventana base de la interfaz; puede instanciarse con <code>new</code> y mostrarse con <code>Show()</code>.</td>
+            </tr>
+            <tr>
+              <td><code>Label</code> / <code>TextBox</code> / <code>Button</code></td>
+              <td><code>Text</code>, <code>Text.Length</code>, <code>Visible</code></td>
+              <td><code>Click</code> (Button), <code>TextChanged</code></td>
+              <td>Entrada y validación de texto, etiquetas informativas y disparo de acciones con <code>MessageBox.Show()</code>.</td>
+            </tr>
+            <tr>
+              <td><code>RadioButton</code> / <code>CheckBox</code></td>
+              <td><code>Checked</code> (booleano)</td>
+              <td><code>CheckedChanged</code></td>
+              <td>Selección única dentro de un <code>GroupBox</code> (RadioButton) o selección múltiple combinada (CheckBox).</td>
+            </tr>
+            <tr>
+              <td><code>ComboBox</code> / <code>ListBox</code> / <code>ListView</code></td>
+              <td><code>Items</code>, <code>DropDownStyle</code>, <code>SelectionMode</code></td>
+              <td><code>SelectedIndexChanged</code></td>
+              <td>Listas desplegables o cajas de selección simple/múltiple para recorrer y visualizar colecciones.</td>
+            </tr>
+            <tr>
+              <td><code>NumericUpDown</code> / <code>ProgressBar</code></td>
+              <td><code>Value</code>, <code>Minimum</code>, <code>Maximum</code></td>
+              <td><code>ValueChanged</code></td>
+              <td>Lectura numérica (<code>decimal</code>) convertida explícitamente a <code>(int)</code> para actualizar el progreso visual.</td>
+            </tr>
+            <tr>
+              <td><code>DateTimePicker</code> / <code>MonthCalendar</code></td>
+              <td><code>Value</code> (tipo <code>DateTime</code>), <code>SelectionStart</code></td>
+              <td><code>ValueChanged</code> / <code>DateChanged</code></td>
+              <td>Operaciones temporales (<code>AddDays</code>, resta y comparación) y conversión a formatos cortos o largos.</td>
+            </tr>
+            <tr>
+              <td><code>TreeView</code> / <code>Timer</code></td>
+              <td><code>Nodes</code>, <code>SelectedNode</code> / <code>Interval</code>, <code>Enabled</code></td>
+              <td><code>AfterSelect</code> / <code>Tick</code></td>
+              <td>Representación jerárquica mediante <code>TreeNode</code> y ejecución periódica controlada por <code>Start()</code> / <code>Stop()</code>.</td>
+            </tr>
+            <tr>
+              <td><code>FontDialog</code> / <code>ColorDialog</code> / <code>FolderBrowserDialog</code></td>
+              <td><code>Font</code>, <code>Color</code>, <code>SelectedPath</code></td>
+              <td>Invocación con <code>ShowDialog()</code></td>
+              <td>Componentes no visuales que conectan la aplicación con selectores nativos del sistema operativo.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="unit-footer-nav">
+        <a href="#mapa-recorrido">↑ Volver al mapa de hitos</a>
+        <a href="#unidad-2">Siguiente: Hito 02 — Estructuras de Datos Dinámicas →</a>
+      </div>
+    </section>
+
+    <!-- ================================================================
+         UNIDAD 2: ESTRUCTURAS DE DATOS DINÁMICAS
+         ================================================================ -->
+    <section class="unit-section" id="unidad-2" aria-labelledby="heading-u2">
+      <div class="section-head">
+        <div class="section-head-main">
+          <span class="kicker-label">Hito 02 · Unidad 2</span>
+          <h2 id="heading-u2">Estructuras de Datos Dinámicas y Recursividad</h2>
+          <p class="section-deck">
+            Superación de las limitaciones de tamaño fijo mediante Tipos de Datos Abstractos (TDA), nodos enlazados por referencias, algoritmos recursivos y el dominio de listas, pilas y colas.
+          </p>
+        </div>
+        <span class="ra-badge">Resultado: RA1 (Estructuras dinámicas y TDA)</span>
+      </div>
+
+      <div class="unit-layout-reverse">
+        <!-- PROSA TÉCNICA UNIDAD 2 -->
+        <div class="prose-stack">
+          <div class="concept-block">
+            <h3>1. Estructuras estáticas vs. dinámicas y TDA</h3>
+            <p>
+              Las estructuras estáticas (vectores, matrices) reservan un tamaño fijo en su creación. En contraste, las <strong>estructuras dinámicas</strong> enlazan unidades llamadas <strong>nodos</strong> mediante punteros o referencias en memoria, creciendo o reduciéndose durante la ejecución sin predeterminar su longitud.
+            </p>
+            <p>
+              Un <strong>Tipo de Dato Abstracto (TDA)</strong> integra datos y operaciones sobre una misma abstracción (por ejemplo, un TDA <code>Círculo</code> con <code>radio</code> y cálculo de <code>área</code>, o un TDA <code>Nodo</code> con <code>nombre</code> y referencia <code>siguiente</code>). Cada elemento creado con <code>new</code> constituye una <strong>instancia</strong> concreta.
+            </p>
+          </div>
+
+          <div class="concept-block">
+            <h3>2. Recursividad y pila de llamadas</h3>
+            <p>
+              Una función recursiva se invoca a sí misma para resolver problemas de manera natural y limpia frente a ciertos ciclos iterativos. Cada llamada apila sus parámetros y dirección de retorno en memoria; por ello, es obligatorio definir una <strong>condición de parada</strong> que evite un desbordamiento de pila (<em>Stack Overflow</em>). En listas enlazadas, la recursividad permite recorrer todos los nodos o hallar el último (<code>unNodo.Siguiente == null</code>).
+            </p>
+          </div>
+
+          <div class="concept-block">
+            <h3>3. Variantes lineales: Pilas, Colas y Listas</h3>
+            <ul>
+              <li><strong>Pila (LIFO — Último en entrar, primero en salir):</strong> operaciones de creación, verificar si está vacía o llena (en implementaciones sobre array), apilar (<em>Push</em>), desapilar (<em>Pop</em>), consultar <code>Cima</code>, tamaño y recorrido.</li>
+              <li><strong>Cola (FIFO — Primero en entrar, primero en salir):</strong> inserción por el final (<em>Enqueue</em>) y extracción por el frente (<em>Dequeue</em>); por ejemplo, filtrar elementos pares de una pila hacia una cola.</li>
+              <li><strong>Lista Simplemente Enlazada:</strong> conoce solo el puntero <code>inicio</code>; cada nodo apunta al <code>Siguiente</code> y el último apunta a <code>null</code>. Al insertar al principio o eliminar en el medio se resguardan referencias con una variable auxiliar.</li>
+              <li><strong>Lista Doblemente Enlazada:</strong> agrega el puntero <code>Anterior</code>; el <code>Anterior</code> del primer nodo y el <code>Siguiente</code> del último apuntan a <code>null</code>.</li>
+              <li><strong>Lista Circular:</strong> el <code>Siguiente</code> del último nodo vuelve a apuntar a <code>inicio</code>; requiere mantener dos punteros (<code>inicio</code> y <code>fin</code>) para controlar el fin de recorrido.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- MÓDULO INTERACTIVO 2A: SIMULADOR DE MEMORIA Y PUNTEROS -->
+        <div class="prose-stack">
+          <aside class="lab-panel" aria-label="Simulador interactivo de estructuras dinámicas">
+            <div class="lab-header">
+              <h3 class="lab-title">Laboratorio de Nodos y Punteros en Memoria</h3>
+              <span class="ra-badge">TDA en vivo</span>
+            </div>
+
+            <div class="btn-row" role="group" aria-label="Tipo de estructura dinámica">
+              <button type="button" class="btn btn-secondary active" id="u2-mode-simple" onclick="u2SetMode('simple')">Lista Simple</button>
+              <button type="button" class="btn btn-secondary" id="u2-mode-doble" onclick="u2SetMode('doble')">Lista Doble</button>
+              <button type="button" class="btn btn-secondary" id="u2-mode-circular" onclick="u2SetMode('circular')">Lista Circular</button>
+              <button type="button" class="btn btn-secondary" id="u2-mode-pila" onclick="u2SetMode('pila')">Pila (LIFO)</button>
+              <button type="button" class="btn btn-secondary" id="u2-mode-cola" onclick="u2SetMode('cola')">Cola (FIFO)</button>
+            </div>
+
+            <div class="btn-row">
+              <div class="field-group">
+                <label class="field-label" for="u2-node-name">Dato / Nombre del Nodo</label>
+                <input class="field-input" id="u2-node-name" type="text" value="Sofía" maxlength="12">
+              </div>
+              <button type="button" class="btn btn-primary" id="u2-btn-start" onclick="u2AddStart()">Agregar al principio</button>
+              <button type="button" class="btn btn-secondary" id="u2-btn-end" onclick="u2AddEnd()">Agregar al final</button>
+              <button type="button" class="btn btn-danger" id="u2-btn-del-first" onclick="u2RemovePrimary()">Eliminar primero</button>
+              <button type="button" class="btn btn-secondary" onclick="u2Traverse()">Recorrer</button>
+            </div>
+
+            <div class="viz-stage" id="u2-svg-stage" aria-label="Representación visual de nodos enlazados"></div>
+
+            <div id="u2-op-status" class="status-banner" aria-live="polite">
+              Estructura inicializada con 3 nodos en memoria.
+            </div>
+          </aside>
+
+          <!-- MÓDULO INTERACTIVO 2B: TRAZADOR DE RECURSIVIDAD -->
+          <aside class="lab-panel" aria-label="Trazador paso a paso de recursividad Factorial">
+            <div class="lab-header">
+              <h3 class="lab-title">Trazador de Pila de Llamadas: Factorial(n)</h3>
+              <span class="ra-badge">Call Stack</span>
+            </div>
+
+            <div class="btn-row">
+              <div class="field-group">
+                <label class="field-label" for="u2-fact-n">Valor inicial n (1 a 6)</label>
+                <input class="field-input" id="u2-fact-n" type="number" min="1" max="6" value="4" onchange="u2InitFact()">
+              </div>
+              <button type="button" class="btn btn-primary" onclick="u2StepFact()">Siguiente paso</button>
+              <button type="button" class="btn btn-secondary" onclick="u2InitFact()">Reiniciar traza</button>
+            </div>
+
+            <div class="winform-canvas">
+              <div>
+                <span class="code-caption">Pila de memoria (de abajo hacia arriba)</span>
+                <div class="stack-frames" id="u2-stack-view"></div>
+              </div>
+              <div class="code-panel">
+                <span class="code-caption">Recursividad vs. Ciclo en C#</span>
+                <pre><code>static int Factorial(int n) {
+  if (n &lt;= 1) return 1; // Corte
+  return n * Factorial(n - 1);
+}
+
+// Equivalente iterativo:
+int r = 1;
+for (int i = n; i &gt;= 1; i--) r *= i;</code></pre>
+              </div>
+            </div>
+
+            <div id="u2-fact-status" class="status-banner" aria-live="polite">
+              Pulsa “Siguiente paso” para observar cómo crece la pila hasta la condición de parada y luego retorna acumulando el producto.
+            </div>
+          </aside>
+        </div>
+      </div>
+
+      <div class="unit-footer-nav">
+        <a href="#unidad-1">← Anterior: Hito 01 — Programación Visual .NET</a>
+        <a href="#unidad-3">Siguiente: Hito 03 — Árboles Binarios, AVL y B →</a>
+      </div>
+    </section>
+
+    <!-- ================================================================
+         UNIDAD 3: ESTRUCTURAS DINÁMICAS II — ÁRBOLES
+         ================================================================ -->
+    <section class="unit-section" id="unidad-3" aria-labelledby="heading-u3">
+      <div class="section-head">
+        <div class="section-head-main">
+          <span class="kicker-label">Hito 03 · Unidad 3</span>
+          <h2 id="heading-u3">Estructuras Dinámicas II: Árboles</h2>
+          <p class="section-deck">
+            Estructuras jerárquicas no lineales para organizar, buscar y equilibrar grandes conjuntos de claves mediante nodos ramificados y recorridos sistemáticos en profundidad.
+          </p>
+        </div>
+        <span class="ra-badge">Resultados: RA1 · RA2 · RA3</span>
+      </div>
+
+      <div class="unit-layout">
+        <div class="prose-stack">
+          <div class="concept-block">
+            <h3>1. Anatomía, altura y equilibrio</h3>
+            <p>
+              Un árbol organiza nodos en relación padre–hijo partiendo desde un único nodo <strong>Raíz</strong>. Los nodos sin descendientes se denominan <strong>hojas</strong>. La <strong>altura</strong> del árbol mide la longitud del camino más largo desde la raíz hasta una hoja. Un árbol está <strong>equilibrado</strong> cuando las alturas de sus subárboles no difieren drásticamente, evitando que las búsquedas degeneren en recorridos lineales.
+            </p>
+          </div>
+
+          <div class="concept-block">
+            <h3>2. Comparativa: Árbol Binario, AVL y Árbol B</h3>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Tipo de árbol</th>
+                    <th>Grado / Regla estructural</th>
+                    <th>Balanceo y uso principal</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>Árbol Binario (ABB)</strong></td>
+                    <td>Hasta 2 hijos por nodo: subárbol izquierdo &lt; raíz &lt; derecho.</td>
+                    <td>No garantiza equilibrio automático; sirve para búsquedas ordenadas, suma total o cálculo de impares.</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Árbol AVL</strong></td>
+                    <td>ABB donde la diferencia de altura entre subárboles es a lo sumo ±1.</td>
+                    <td>Se autobalancea mediante rotaciones simples o dobles tras cada inserción o borrado.</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Árbol B</strong></td>
+                    <td>Nodos multicamino con múltiples claves ordenadas y punteros a hijos.</td>
+                    <td>Todas las hojas están al mismo nivel; minimiza accesos a disco en bases de datos y archivos.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="concept-block">
+            <h3>3. Recorridos recursivos en árboles binarios</h3>
+            <div class="code-panel">
+              <span class="code-caption">Implementación de recorridos y suma en C#</span>
+              <pre><code>void PreOrden(NodoArbol n)  { if (n != null) { Visitar(n); PreOrden(n.Izq); PreOrden(n.Der); } }
+void InOrden(NodoArbol n)   { if (n != null) { InOrden(n.Izq); Visitar(n); InOrden(n.Der); } }
+void PostOrden(NodoArbol n) { if (n != null) { PostOrden(n.Izq); PostOrden(n.Der); Visitar(n); } }
+
+int SumarImpares(NodoArbol n) {
+  if (n == null) return 0;
+  int aporte = (n.Valor % 2 != 0) ? n.Valor : 0;
+  return aporte + SumarImpares(n.Izq) + SumarImpares(n.Der);
+}</code></pre>
+            </div>
+          </div>
+        </div>
+
+        <!-- MÓDULO INTERACTIVO UNIDAD 3 -->
+        <aside class="lab-panel" aria-label="Explorador interactivo de Árbol Binario de Búsqueda">
+          <div class="lab-header">
+            <h3 class="lab-title">Explorador de Árbol Binario (Altura 4)</h3>
+            <span class="ra-badge">ABB Interactivo</span>
+          </div>
+
+          <div class="btn-row">
+            <div class="field-group">
+              <label class="field-label" for="u3-val-input">Valor entero (1–99)</label>
+              <input class="field-input" id="u3-val-input" type="number" min="1" max="99" value="45">
+            </div>
+            <button type="button" class="btn btn-primary" onclick="u3Insert()">Insertar nodo</button>
+            <button type="button" class="btn btn-secondary" onclick="u3Search()">Buscar valor</button>
+            <button type="button" class="btn btn-secondary" onclick="u3Reset()">Restaurar árbol</button>
+          </div>
+
+          <div class="btn-row" role="group" aria-label="Recorridos de árbol">
+            <button type="button" class="btn btn-secondary" onclick="u3RunTraversal('pre')">Recorrer Preorden</button>
+            <button type="button" class="btn btn-secondary" onclick="u3RunTraversal('in')">Recorrer Inorden</button>
+            <button type="button" class="btn btn-secondary" onclick="u3RunTraversal('post')">Recorrer Postorden</button>
+          </div>
+
+          <div class="viz-stage" id="u3-tree-stage" aria-label="Diagrama SVG del árbol binario"></div>
+
+          <div class="figures-row" style="margin-bottom: 0;">
+            <div class="figure-card">
+              <span class="figure-label">Altura</span>
+              <span class="figure-value" id="u3-metric-height">4</span>
+            </div>
+            <div class="figure-card">
+              <span class="figure-label">Hojas</span>
+              <span class="figure-value" id="u3-metric-leaves">5</span>
+            </div>
+            <div class="figure-card">
+              <span class="figure-label">Suma total</span>
+              <span class="figure-value" id="u3-metric-sum">445</span>
+            </div>
+            <div class="figure-card">
+              <span class="figure-label">Suma impares</span>
+              <span class="figure-value" id="u3-metric-odd">125</span>
+            </div>
+          </div>
+
+          <div id="u3-tree-status" class="status-banner" aria-live="polite">
+            Árbol equilibrado de altura 4 listo. Selecciona un recorrido o busca/inserta un valor entero.
+          </div>
+        </aside>
+      </div>
+
+      <div class="unit-footer-nav">
+        <a href="#unidad-2">← Anterior: Hito 02 — Estructuras Dinámicas</a>
+        <a href="#unidad-4">Siguiente: Hito 04 — Archivos y Persistencia →</a>
+      </div>
+    </section>
+
+    <!-- ================================================================
+         UNIDAD 4: ARCHIVOS
+         ================================================================ -->
+    <section class="unit-section" id="unidad-4" aria-labelledby="heading-u4">
+      <div class="section-head">
+        <div class="section-head-main">
+          <span class="kicker-label">Hito 04 · Unidad 4</span>
+          <h2 id="heading-u4">Archivos y Persistencia de Datos</h2>
+          <p class="section-deck">
+            Almacenamiento permanente en disco más allá de la ejecución en memoria RAM: clasificación de archivos según su formato, organización interna y modo de acceso, junto con sus operaciones en C#.
+          </p>
+        </div>
+        <span class="ra-badge">Resultado: RA2 (Persistencia en archivos)</span>
+      </div>
+
+      <div class="unit-layout-reverse">
+        <div class="prose-stack">
+          <div class="concept-block">
+            <h3>1. Cuadro sinóptico: Tipo, Organización y Acceso</h3>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Dimensión</th>
+                    <th>Clasificación</th>
+                    <th>Características y operaciones en C#</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>Tipo de archivo</strong></td>
+                    <td>Texto vs. Binario</td>
+                    <td>Texto: caracteres legibles línea por línea (<code>StreamWriter</code> / <code>StreamReader</code>). Binario: bytes compactos y tipados (<code>BinaryWriter</code> / <code>BinaryReader</code>).</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Organización</strong></td>
+                    <td>Secuencial vs. Relativa / Indexada</td>
+                    <td>Secuencial: registros continuos uno tras otro. Relativa/Directa: registros de longitud fija ubicables por dirección o clave.</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Acceso</strong></td>
+                    <td>Secuencial vs. Directo (Aleatorio)</td>
+                    <td>Secuencial: exige recorrer desde el registro 0 hasta el fin (<code>EndOfStream</code>). Directo: posiciona el puntero con <code>FileStream.Seek()</code>.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="concept-block">
+            <h3>2. Ciclo de operaciones: crear, grabar, leer y recorrer</h3>
+            <div class="code-panel">
+              <span class="code-caption">Grabación y recorrido secuencial seguro en C#</span>
+              <pre><code>// Creación y grabación
+using (StreamWriter sw = new StreamWriter("alumnos.txt", true)) {
+  sw.WriteLine($"{legajo};{nombre};{carrera}");
+}
+
+// Lectura y recorrido completo hasta EOF
+using (StreamReader sr = new StreamReader("alumnos.txt")) {
+  while (!sr.EndOfStream) {
+    string linea = sr.ReadLine();
+    ProcesarRegistro(linea);
+  }
+}</code></pre>
+            </div>
+          </div>
+        </div>
+
+        <!-- MÓDULO INTERACTIVO UNIDAD 4 -->
+        <aside class="lab-panel" aria-label="Comparador de acceso secuencial vs directo en disco">
+          <div class="lab-header">
+            <h3 class="lab-title">Simulador de Puntero de Archivo en Disco</h3>
+            <span class="ra-badge">E/S Comparada</span>
+          </div>
+
+          <div class="btn-row">
+            <div class="field-group">
+              <label class="field-label" for="u4-target-idx">Registro objetivo a leer (0 a 7)</label>
+              <select class="field-select" id="u4-target-idx">
+                <option value="0">Posición 0 — Leg. 1001</option>
+                <option value="2">Posición 2 — Leg. 1018</option>
+                <option value="5" selected>Posición 5 — Leg. 1042</option>
+                <option value="7">Posición 7 — Leg. 1095</option>
+              </select>
+            </div>
+            <button type="button" class="btn btn-primary" onclick="u4Simulate('secuencial')">Leer Acceso Secuencial</button>
+            <button type="button" class="btn btn-secondary" onclick="u4Simulate('directo')">Leer Acceso Directo</button>
+          </div>
+
+          <div class="disk-track" id="u4-disk-track"></div>
+
+          <div class="figures-row" style="margin-bottom: 0;">
+            <div class="figure-card">
+              <span class="figure-label">Lecturas realizadas</span>
+              <span class="figure-value" id="u4-reads-count">0</span>
+            </div>
+            <div class="figure-card">
+              <span class="figure-label">Desplazamiento (Seek)</span>
+              <span class="figure-value" id="u4-byte-offset">0 B</span>
+            </div>
+          </div>
+
+          <div id="u4-file-status" class="status-banner" aria-live="polite">
+            Selecciona una posición y compara cuántas operaciones requiere un archivo secuencial frente a uno de acceso directo.
+          </div>
+        </aside>
+      </div>
+
+      <div class="unit-footer-nav">
+        <a href="#unidad-3">← Anterior: Hito 03 — Árboles</a>
+        <a href="#unidad-5">Siguiente: Hito 05 — Corte de Control y Apareo →</a>
+      </div>
+    </section>
+
+    <!-- ================================================================
+         UNIDAD 5: CORTE DE CONTROL Y APAREO DE ARCHIVOS
+         ================================================================ -->
+    <section class="unit-section" id="unidad-5" aria-labelledby="heading-u5">
+      <div class="section-head">
+        <div class="section-head-main">
+          <span class="kicker-label">Hito 05 · Unidad 5</span>
+          <h2 id="heading-u5">Corte de Control y Apareo de Archivos</h2>
+          <p class="section-deck">
+            Algoritmos clásicos de procesamiento masivo en una sola pasada lineal sobre archivos secuenciales ordenados, sin necesidad de cargar volúmenes completos en memoria RAM.
+          </p>
+        </div>
+        <span class="ra-badge">Resultado: RA2 (Procesamiento secuencial)</span>
+      </div>
+
+      <div class="prose-stack" style="margin-bottom: var(--space-xl);">
+        <div class="dual-file-grid">
+          <div class="callout-note">
+            <h3>Metodología del Corte de Control</h3>
+            <p>
+              Permite agrupar registros de un único archivo secuencial y emitir subtotales por niveles jerárquicos. <strong>Requisito indispensable:</strong> el archivo debe estar ordenado por las claves de corte desde el nivel mayor al menor (ej.: <code>Universidad → Facultad → Carrera → Legajo</code>).
+            </p>
+            <p style="margin-bottom: 0;">
+              Se trabaja comparando la clave actual con una variable de resguardo (<code>claveAnterior</code>). Si cambia un nivel superior (por ejemplo <code>Facultad</code>), obliga a cerrar también los niveles inferiores (<code>Carrera</code>), imprimir sus totales y reiniciar los contadores antes de avanzar.
+            </p>
+          </div>
+
+          <div class="callout-note sage">
+            <h3>Metodología del Apareo Secuencial</h3>
+            <p>
+              Consiste en recorrer simultáneamente dos o más archivos secuenciales para consolidarlos o cruzar información. <strong>Requisito indispensable:</strong> ambos archivos deben estar ordenados ascendentemente por la <strong>misma clave de enlace</strong> (por ejemplo <code>Legajo</code> entre <code>Alumnos</code> y <code>Notas</code>).
+            </p>
+            <p style="margin-bottom: 0;">
+              En cada iteración se comparan las claves vigentes: si <code>ClaveA &lt; ClaveB</code> avanza A; si <code>ClaveB &lt; ClaveA</code> avanza B; si <code>ClaveA == ClaveB</code> se produce la coincidencia (<em>match</em>) y se combinan los datos, controlando el fin de archivo mediante centinelas o banderas EOF.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- MÓDULO INTERACTIVO UNIDAD 5 -->
+      <aside class="lab-panel" aria-label="Simulador paso a paso de Corte de Control y Apareo">
+        <div class="lab-header">
+          <h3 class="lab-title">Laboratorio Algorítmico: Corte de Control y Apareo Secuencial</h3>
+          <div class="btn-row">
+            <button type="button" class="btn btn-secondary active" id="u5-tab-corte" onclick="u5SetMode('corte')">Corte de Control</button>
+            <button type="button" class="btn btn-secondary" id="u5-tab-apareo" onclick="u5SetMode('apareo')">Apareo de Archivos</button>
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <button type="button" class="btn btn-primary" id="u5-btn-step" onclick="u5Step()">Siguiente paso</button>
+          <button type="button" class="btn btn-secondary" onclick="u5RunAll()">Ejecutar completo</button>
+          <button type="button" class="btn btn-secondary" onclick="u5Reset()">Reiniciar</button>
+        </div>
+
+        <div id="u5-stage"></div>
+
+        <div>
+          <span class="code-caption">Salida generada por el algoritmo (Consola de listado)</span>
+          <div class="console-out" id="u5-console" aria-live="polite"></div>
+        </div>
+      </aside>
+
+      <div class="unit-footer-nav">
+        <a href="#unidad-4">← Anterior: Hito 04 — Archivos</a>
+        <a href="#unidad-6">Siguiente: Hito 06 — Estilos de Programación →</a>
+      </div>
+    </section>
+
+    <!-- ================================================================
+         UNIDAD 6: ESTILOS Y PARADIGMAS DE PROGRAMACIÓN
+         ================================================================ -->
+    <section class="unit-section" id="unidad-6" aria-labelledby="heading-u6">
+      <div class="section-head">
+        <div class="section-head-main">
+          <span class="kicker-label">Hito 06 · Unidad 6</span>
+          <h2 id="heading-u6">Estilos y Paradigmas de Programación</h2>
+          <p class="section-deck">
+            Síntesis conceptual de las cuatro grandes formas de concebir y estructurar un programa: desde la lógica imperativa y reactiva hasta la abstracción orientada a objetos y la deducción lógica con backtracking.
+          </p>
+        </div>
+        <span class="ra-badge">Resultados: RA1 · RA2 · RA3</span>
+      </div>
+
+      <!-- Cuadro Sinóptico Comparativo -->
+      <div class="table-wrap" aria-label="Cuadro sinóptico comparativo de paradigmas">
+        <table>
+          <thead>
+            <tr>
+              <th>Paradigma</th>
+              <th>Unidad básica y fundamentos</th>
+              <th>Flujo de ejecución</th>
+              <th>Lenguajes representativos</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Estructurado</strong></td>
+              <td>Procedimientos y funciones; tres estructuras de control: secuencia, selección e iteración.</td>
+              <td>Secuencial paso a paso controlado por el algoritmo principal.</td>
+              <td>C, Pascal</td>
+            </tr>
+            <tr>
+              <td><strong>Orientado a Eventos</strong></td>
+              <td>Controles, propiedades y manejadores de eventos (<em>event handlers</em>).</td>
+              <td>Reactivo: un bucle de espera dispara código cuando ocurre un evento (clic, carga, timer).</td>
+              <td>C# (WinForms), Visual Basic</td>
+            </tr>
+            <tr>
+              <td><strong>Orientado a Objetos</strong></td>
+              <td><strong>Clases</strong> y <strong>Objetos</strong> (instancias con estado y métodos). Pilares: encapsulamiento, herencia, polimorfismo y reutilización.</td>
+              <td>Colaboración mediante envío de mensajes entre instancias.</td>
+              <td>C#, Java, C++</td>
+            </tr>
+            <tr>
+              <td><strong>Lógico (Declarativo)</strong></td>
+              <td>Hechos, <strong>predicados</strong>, <strong>reglas</strong> y objetivos (<strong>goals</strong>).</td>
+              <td>Motor de inferencia con unificación, <strong>backtracking</strong> y predicado <code>fail</code>.</td>
+              <td>Prolog</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="unit-layout" style="margin-top: var(--space-xl);">
+        <!-- MÓDULO INTERACTIVO 6A: COMPARADOR DE PARADIGMAS -->
+        <aside class="lab-panel" aria-label="Explorador de código por paradigma">
+          <div class="lab-header">
+            <h3 class="lab-title">Un mismo problema en 4 paradigmas</h3>
+            <span class="ra-badge">Comparador</span>
+          </div>
+
+          <div class="btn-row" role="group" aria-label="Elegir paradigma">
+            <button type="button" class="btn btn-secondary active" id="u6-p-est" onclick="u6ShowParadigm('estructurado')">Estructurado</button>
+            <button type="button" class="btn btn-secondary" id="u6-p-eve" onclick="u6ShowParadigm('eventos')">Eventos</button>
+            <button type="button" class="btn btn-secondary" id="u6-p-poo" onclick="u6ShowParadigm('poo')">Objetos (POO)</button>
+            <button type="button" class="btn btn-secondary" id="u6-p-log" onclick="u6ShowParadigm('logico')">Lógico</button>
+          </div>
+
+          <div id="u6-paradigm-summary" class="callout-note"></div>
+
+          <div class="code-panel">
+            <span class="code-caption" id="u6-code-title">Ejemplo representativo</span>
+            <pre><code id="u6-code-body"></code></pre>
+          </div>
+        </aside>
+
+        <!-- MÓDULO INTERACTIVO 6B: SIMULADOR DE BACKTRACKING Y FAIL -->
+        <aside class="lab-panel" aria-label="Simulador de Backtracking y fail en paradigma lógico">
+          <div class="lab-header">
+            <h3 class="lab-title">Trazador Lógico: Backtracking y predicado fail</h3>
+            <span class="ra-badge">Prolog</span>
+          </div>
+
+          <div class="code-panel">
+            <span class="code-caption">Base de hechos, regla y goal</span>
+            <pre><code>nota(ana, 8).   nota(luis, 3).   nota(sofia, 9).
+aprobado(X) :- nota(X, N), N &gt;= 4.
+?- aprobado(X), registrar(X), fail.</code></pre>
+          </div>
+
+          <div class="btn-row">
+            <button type="button" class="btn btn-primary" onclick="u6LogicStep()">Siguiente paso de inferencia</button>
+            <button type="button" class="btn btn-secondary" onclick="u6LogicReset()">Reiniciar consulta</button>
+          </div>
+
+          <div class="logic-steps" id="u6-logic-trace" aria-live="polite"></div>
+
+          <div id="u6-logic-status" class="status-banner" aria-live="polite">
+            Pulsa “Siguiente paso de inferencia” para ver cómo el motor evalúa cada hecho, falla en luis y usa <code>fail</code> para forzar el backtracking sobre todo el universo.
+          </div>
+        </aside>
+      </div>
+
+      <div class="unit-footer-nav">
+        <a href="#unidad-5">← Anterior: Hito 05 — Corte de Control y Apareo</a>
+        <a href="#caratula">↑ Volver a la carátula institucional</a>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- PIE INSTITUCIONAL Y BIBLIOGRAFÍA -->
+  <footer class="page-footer">
+    <div class="container-inner footer-grid">
+      <div>
+        <span class="kicker-label">Síntesis Académica</span>
+        <h3>Programación y Estructuras de Datos</h3>
+        <p>
+          Presentación multimedial interactiva desarrollada como síntesis integral de las seis unidades de la asignatura: programación visual orientada a eventos en C# (.NET Framework), estructuras dinámicas de memoria y recursividad, árboles binarios y balanceados, archivos secuenciales y directos, corte de control, apareo de archivos y paradigmas de programación.
+        </p>
+        <p style="margin-bottom: 0; font-size: 0.9rem; color: var(--on-surface-variant);">
+          <strong>Alumno:</strong> Ramiro Pedro Huczuk · <strong>Institución:</strong> Universidad Abierta Interamericana
+        </p>
+      </div>
+      <div>
+        <span class="kicker-label">Bibliografía de referencia de la asignatura</span>
+        <ul style="margin: 0; padding-left: 1.2rem; font-size: 0.9rem; color: var(--on-surface-variant);">
+          <li>Ceballos, Fco. Javier — <em>Microsoft C# lenguaje y aplicaciones</em>, Alfaomega RA-MA, 2008.</li>
+          <li>Deitel, Harvey &amp; Deitel, Paul — <em>C# cómo programar</em>, Pearson Prentice Hall, 2007.</li>
+          <li>Nilsson, Nils J. — <em>Inteligencia artificial: una nueva síntesis</em>, McGraw-Hill, 2001.</li>
+          <li>Guía de Revisión Conceptual y Trabajos Prácticos — Programación y Estructuras de Datos (UAI).</li>
+        </ul>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    /* ==========================================================================
+       UNIDAD 1: SIMULADOR WINFORMS (PROPIEDADES, EVENTOS Y CÓDIGO C#)
+       ========================================================================== */
+    const u1State = {
+      scenario: `saludo`,
+      nudValue: 40,
+      timerValue: 0,
+      timerId: null,
+      dateBase: `2026-07-03`,
+      dateOffset: 2
+    };
+
+    function u1SelectScenario(val) {
+      if (u1State.timerId !== null) {
+        clearInterval(u1State.timerId);
+        u1State.timerId = null;
+      }
+      u1State.scenario = val;
+      u1RenderScenario();
+    }
+
+    function u1RenderScenario() {
+      const stage = document.getElementById(`u1-interactive-stage`);
+      const props = document.getElementById(`u1-props-view`);
+      const codeEl = document.getElementById(`u1-code-view`);
+      const caption = document.getElementById(`u1-form-caption`);
+      const log = document.getElementById(`u1-event-log`);
+      if (!stage || !props || !codeEl || !caption || !log) return;
+
+      if (u1State.scenario === `saludo`) {
+        caption.textContent = `frmInicial.cs [Diseño]`;
+        stage.innerHTML = `
+          <div class="field-group">
+            <label class="field-label" for="u1-txt-nombre">lblNombre: Ingrese su nombre</label>
+            <input class="field-input" id="u1-txt-nombre" type="text" value="Ramiro" maxlength="24">
+          </div>
+          <div class="btn-row">
+            <button type="button" class="btn btn-primary" onclick="u1TriggerGreeting()">Saludar (btnSaludar)</button>
+          </div>
+        `;
+        props.innerHTML = `
+          <table aria-label="Propiedades del control">
+            <tbody>
+              <tr><td><code>(Name)</code></td><td><code>txtNombre</code></td></tr>
+              <tr><td><code>Text</code></td><td id="u1-prop-text"><code>"Ramiro"</code></td></tr>
+              <tr><td><code>btn.Name</code></td><td><code>btnSaludar</code></td></tr>
+              <tr><td><code>Evento</code></td><td><code>Click</code></td></tr>
+            </tbody>
+          </table>
+        `;
+        log.className = `status-banner`;
+        log.textContent = `Haz clic en btnSaludar o deja el cuadro vacío para probar la validación de Text.Length == 0.`;
+        codeEl.textContent = `private void btnSaludar_Click(object sender, EventArgs e) {\n  if (txtNombre.Text.Length == 0) {\n    MessageBox.Show("Por favor ingrese un nombre");\n  } else {\n    MessageBox.Show("Bienvenido " + txtNombre.Text);\n  }\n}`;
+      } else if (u1State.scenario === `progreso`) {
+        caption.textContent = `frmProgreso.cs [Diseño]`;
+        stage.innerHTML = `
+          <div class="field-group">
+            <label class="field-label" for="u1-nud">nudProgresoActual (0–100)</label>
+            <input class="field-input" id="u1-nud" type="number" min="0" max="100" value="${u1State.nudValue}" oninput="u1UpdateProgress(this.value)">
+          </div>
+          <div>
+            <span class="field-label">progressBar1.Value = <span id="u1-pb-num">${u1State.nudValue}</span>%</span>
+            <div class="progress-track" style="margin-top: var(--space-xs);">
+              <div class="progress-fill" id="u1-pb-fill" style="width: ${u1State.nudValue}%;"></div>
+            </div>
+          </div>
+        `;
+        props.innerHTML = `
+          <table aria-label="Propiedades NumericUpDown">
+            <tbody>
+              <tr><td><code>(Name)</code></td><td><code>nudProgresoActual</code></td></tr>
+              <tr><td><code>Minimum / Maximum</code></td><td><code>0 / 100</code></td></tr>
+              <tr><td><code>Value (decimal)</code></td><td id="u1-prop-nud"><code>${u1State.nudValue}</code></td></tr>
+              <tr><td><code>Evento</code></td><td><code>ValueChanged</code></td></tr>
+            </tbody>
+          </table>
+        `;
+        log.className = `status-banner`;
+        log.textContent = `Modifica el control numérico para disparar ValueChanged con conversión explícita (int).`;
+        codeEl.textContent = `private void nudProgresoActual_ValueChanged(object sender, EventArgs e) {\n  // Conversión explícita de decimal a int\n  progressBar1.Value = (int)nudProgresoActual.Value;\n}`;
+      } else if (u1State.scenario === `timer`) {
+        caption.textContent = `frmFormulario3.cs [Diseño]`;
+        stage.innerHTML = `
+          <div class="btn-row">
+            <button type="button" class="btn btn-primary" onclick="u1StartTimer()">btnIniciar (timer1.Start)</button>
+            <button type="button" class="btn btn-secondary" onclick="u1StopTimer()">Detener (timer1.Stop)</button>
+          </div>
+          <div>
+            <span class="field-label">progressBar1.Value = <span id="u1-timer-num">${u1State.timerValue}</span> / 100</span>
+            <div class="progress-track" style="margin-top: var(--space-xs);">
+              <div class="progress-fill" id="u1-timer-fill" style="width: ${u1State.timerValue}%;"></div>
+            </div>
+          </div>
+        `;
+        props.innerHTML = `
+          <table aria-label="Propiedades Timer">
+            <tbody>
+              <tr><td><code>(Name)</code></td><td><code>timer1</code> (no visual)</td></tr>
+              <tr><td><code>Enabled</code></td><td id="u1-prop-enabled"><code>false</code></td></tr>
+              <tr><td><code>Interval</code></td><td><code>100 ms</code></td></tr>
+              <tr><td><code>Evento</code></td><td><code>Tick</code></td></tr>
+            </tbody>
+          </table>
+        `;
+        log.className = `status-banner`;
+        log.textContent = `Presiona btnIniciar para activar timer1; al llegar a 100 el propio evento Tick ejecuta timer1.Stop().`;
+        codeEl.textContent = `private void timer1_Tick(object sender, EventArgs e) {\n  if (progressBar1.Value == 100) {\n    timer1.Stop();\n  } else {\n    progressBar1.Value += 10;\n  }\n}`;
+      } else {
+        caption.textContent = `frmFechas.cs [Diseño]`;
+        stage.innerHTML = `
+          <div class="field-group">
+            <label class="field-label" for="u1-date-picker">dateTimePicker1.Value</label>
+            <input class="field-input" id="u1-date-picker" type="date" value="${u1State.dateBase}" onchange="u1UpdateDate(this.value)">
+          </div>
+          <div class="btn-row">
+            <button type="button" class="btn btn-primary" onclick="u1CalcDate(2)">+2 días (AddDays)</button>
+            <button type="button" class="btn btn-secondary" onclick="u1CalcDate(7)">+7 días</button>
+          </div>
+        `;
+        props.innerHTML = `
+          <table aria-label="Propiedades DateTimePicker">
+            <tbody>
+              <tr><td><code>(Name)</code></td><td><code>dateTimePicker1</code></td></tr>
+              <tr><td><code>Tipo de Value</code></td><td><code>System.DateTime</code></td></tr>
+              <tr><td><code>Resultado</code></td><td id="u1-prop-date"><code>05/07/2026</code></td></tr>
+              <tr><td><code>Método</code></td><td><code>ToShortDateString()</code></td></tr>
+            </tbody>
+          </table>
+        `;
+        u1CalcDate(2);
+        codeEl.textContent = `DateTime unaFecha = dateTimePicker1.Value;\nDateTime otraFecha = unaFecha.AddDays(2);\nmonthCalendar1.SetDate(otraFecha);\nMessageBox.Show(otraFecha.ToShortDateString());`;
+      }
+    }
+
+    function u1TriggerGreeting() {
+      const inp = document.getElementById(`u1-txt-nombre`);
+      const prop = document.getElementById(`u1-prop-text`);
+      const log = document.getElementById(`u1-event-log`);
+      if (!inp || !log) return;
+      const val = inp.value.trim();
+      if (prop) prop.innerHTML = `<code>"${val}"</code>`;
+      if (val.length === 0) {
+        log.className = `status-banner err`;
+        log.textContent = `MessageBox.Show(): "Por favor ingrese un nombre" (validación txtNombre.Text.Length == 0).`;
+      } else {
+        log.className = `status-banner ok`;
+        log.textContent = `Evento btnSaludar_Click ejecutado → MessageBox.Show("Bienvenido ${val}").`;
+      }
+    }
+
+    function u1UpdateProgress(raw) {
+      let val = parseInt(raw, 10);
+      if (isNaN(val)) val = 0;
+      if (val < 0) val = 0;
+      if (val > 100) val = 100;
+      u1State.nudValue = val;
+      const fill = document.getElementById(`u1-pb-fill`);
+      const num = document.getElementById(`u1-pb-num`);
+      const prop = document.getElementById(`u1-prop-nud`);
+      const log = document.getElementById(`u1-event-log`);
+      if (fill) fill.style.width = `${val}%`;
+      if (num) num.textContent = `${val}`;
+      if (prop) prop.innerHTML = `<code>${val}</code>`;
+      if (log) {
+        log.className = `status-banner ok`;
+        log.textContent = `Evento nudProgresoActual_ValueChanged → progressBar1.Value actualizado a ${val}.`;
+      }
+    }
+
+    function u1StartTimer() {
+      if (u1State.timerId !== null) clearInterval(u1State.timerId);
+      if (u1State.timerValue >= 100) u1State.timerValue = 0;
+      const enabledEl = document.getElementById(`u1-prop-enabled`);
+      const log = document.getElementById(`u1-event-log`);
+      if (enabledEl) enabledEl.innerHTML = `<code>true</code>`;
+      if (log) {
+        log.className = `status-banner`;
+        log.textContent = `timer1.Start() activo — ejecutando timer1_Tick cada 100 ms…`;
+      }
+      u1State.timerId = setInterval(function () {
+        if (u1State.timerValue >= 100) {
+          u1StopTimer(true);
+          return;
+        }
+        u1State.timerValue += 10;
+        const fill = document.getElementById(`u1-timer-fill`);
+        const num = document.getElementById(`u1-timer-num`);
+        if (fill) fill.style.width = `${u1State.timerValue}%`;
+        if (num) num.textContent = `${u1State.timerValue}`;
+      }, 140);
+    }
+
+    function u1StopTimer(completed) {
+      if (u1State.timerId !== null) {
+        clearInterval(u1State.timerId);
+        u1State.timerId = null;
+      }
+      const enabledEl = document.getElementById(`u1-prop-enabled`);
+      const log = document.getElementById(`u1-event-log`);
+      if (enabledEl) enabledEl.innerHTML = `<code>false</code>`;
+      if (log) {
+        log.className = completed ? `status-banner ok` : `status-banner warn`;
+        log.textContent = completed
+          ? `progressBar1.Value == 100 → timer1.Stop() ejecutado automáticamente.`
+          : `timer1.Stop() invocado manualmente en Value = ${u1State.timerValue}.`;
+      }
+    }
+
+    function u1UpdateDate(val) {
+      if (val) u1State.dateBase = val;
+      u1CalcDate(u1State.dateOffset);
+    }
+
+    function u1CalcDate(days) {
+      u1State.dateOffset = days;
+      const parts = u1State.dateBase.split(`-`);
+      if (parts.length !== 3) return;
+      const d = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
+      d.setDate(d.getDate() + days);
+      const dd = String(d.getDate()).padStart(2, `0`);
+      const mm = String(d.getMonth() + 1).padStart(2, `0`);
+      const yyyy = d.getFullYear();
+      const shortStr = `${dd}/${mm}/${yyyy}`;
+      const prop = document.getElementById(`u1-prop-date`);
+      const log = document.getElementById(`u1-event-log`);
+      if (prop) prop.innerHTML = `<code>${shortStr}</code>`;
+      if (log) {
+        log.className = `status-banner ok`;
+        log.textContent = `unaFecha.AddDays(${days}).ToShortDateString() → "${shortStr}" asignada a monthCalendar1.`;
+      }
+    }
+
+    /* ==========================================================================
+       UNIDAD 2A: SIMULADOR DE ESTRUCTURAS DINÁMICAS (SVG EN MEMORIA)
+       ========================================================================== */
+    const u2State = {
+      mode: `simple`,
+      nodes: [
+        { name: `Pedro`, addr: `0x02` },
+        { name: `Luis`, addr: `0x04` },
+        { name: `Marta`, addr: `0x07` }
+      ],
+      nextAddr: 9,
+      highlightIdx: -1,
+      traverseTimer: null
+    };
+
+    function u2SetMode(mode) {
+      if (u2State.traverseTimer) {
+        clearInterval(u2State.traverseTimer);
+        u2State.traverseTimer = null;
+      }
+      u2State.mode = mode;
+      u2State.highlightIdx = -1;
+
+      const modes = [`simple`, `doble`, `circular`, `pila`, `cola`];
+      modes.forEach(function (m) {
+        const b = document.getElementById(`u2-mode-${m}`);
+        if (b) b.classList.toggle(`active`, m === mode);
+      });
+
+      const btnStart = document.getElementById(`u2-btn-start`);
+      const btnEnd = document.getElementById(`u2-btn-end`);
+      const btnDel = document.getElementById(`u2-btn-del-first`);
+
+      if (btnStart && btnEnd && btnDel) {
+        if (mode === `pila`) {
+          btnStart.textContent = `Apilar (Push en Cima)`;
+          btnEnd.style.display = `none`;
+          btnDel.textContent = `Desapilar (Pop Cima)`;
+        } else if (mode === `cola`) {
+          btnStart.style.display = `none`;
+          btnEnd.style.display = `inline-flex`;
+          btnEnd.textContent = `Encolar (Enqueue al Fin)`;
+          btnDel.textContent = `Desencolar (Dequeue Frente)`;
+        } else {
+          btnStart.style.display = `inline-flex`;
+          btnEnd.style.display = `inline-flex`;
+          btnStart.textContent = `Agregar al principio`;
+          btnEnd.textContent = `Agregar al final`;
+          btnDel.textContent = `Eliminar primero`;
+        }
+      }
+
+      u2RenderList(`Estructura cambiada a: ${u2ModeLabel(mode)}.`);
+    }
+
+    function u2ModeLabel(mode) {
+      if (mode === `simple`) return `Lista Simplemente Enlazada`;
+      if (mode === `doble`) return `Lista Doblemente Enlazada`;
+      if (mode === `circular`) return `Lista Circular (inicio + fin)`;
+      if (mode === `pila`) return `Pila (LIFO)`;
+      return `Cola (FIFO)`;
+    }
+
+    function u2MakeAddr() {
+      const a = `0x0${u2State.nextAddr.toString(16).toUpperCase()}`.slice(-4);
+      u2State.nextAddr += 2;
+      return a;
+    }
+
+    function u2GetInputName() {
+      const inp = document.getElementById(`u2-node-name`);
+      if (!inp) return `Nodo`;
+      const val = inp.value.trim();
+      if (!val) {
+        const st = document.getElementById(`u2-op-status`);
+        if (st) {
+          st.className = `status-banner err`;
+          st.textContent = `Validación: debe ingresar un nombre para instanciar el nuevo Nodo.`;
+        }
+        return null;
+      }
+      return val;
+    }
+
+    function u2AddStart() {
+      const name = u2GetInputName();
+      if (!name) return;
+      if (u2State.nodes.length >= 6) {
+        u2RenderList(`Límite visual de 6 nodos alcanzado en el lienzo; elimina alguno para continuar.`, `warn`);
+        return;
+      }
+      const nuevo = { name: name, addr: u2MakeAddr() };
+      u2State.nodes.unshift(nuevo);
+      u2State.highlightIdx = 0;
+      const msg = u2State.mode === `pila`
+        ? `Push("${name}"): el nuevo nodo en ${nuevo.addr} pasa a ser la Cima y apunta al anterior.`
+        : `AgregarAlPrincipio("${name}"): se resguardó inicio en variable aux, inicio = ${nuevo.addr} y nuevo.Siguiente = aux.`;
+      u2RenderList(msg, `ok`);
+    }
+
+    function u2AddEnd() {
+      const name = u2GetInputName();
+      if (!name) return;
+      if (u2State.nodes.length >= 6) {
+        u2RenderList(`Límite visual de 6 nodos alcanzado en el lienzo; elimina alguno para continuar.`, `warn`);
+        return;
+      }
+      const nuevo = { name: name, addr: u2MakeAddr() };
+      u2State.nodes.push(nuevo);
+      u2State.highlightIdx = u2State.nodes.length - 1;
+      const msg = u2State.mode === `cola`
+        ? `Enqueue("${name}"): se enlazó al final de la cola en ${nuevo.addr} actualizando el puntero fin.`
+        : `AgregarAlFinal("${name}"): BuscarUltimo() recorrió hasta Siguiente == null y enlazó ${nuevo.addr}.`;
+      u2RenderList(msg, `ok`);
+    }
+
+    function u2RemovePrimary() {
+      if (u2State.nodes.length === 0) {
+        u2RenderList(`La estructura está vacía (inicio == null). No hay nodos para extraer.`, `err`);
+        return;
+      }
+      const removed = u2State.nodes.shift();
+      u2State.highlightIdx = u2State.nodes.length > 0 ? 0 : -1;
+      const msg = u2State.mode === `pila`
+        ? `Pop(): extraído "${removed.name}" (${removed.addr}); Cima ahora apunta al siguiente nodo.`
+        : u2State.mode === `cola`
+          ? `Dequeue(): atendido "${removed.name}" (${removed.addr}); Frente avanza al segundo elemento.`
+          : `EliminarPrimero(): inicio ahora apunta a inicio.Siguiente (se liberó "${removed.name}").`;
+      u2RenderList(msg, `warn`);
+    }
+
+    function u2Traverse() {
+      if (u2State.traverseTimer) {
+        clearInterval(u2State.traverseTimer);
+        u2State.traverseTimer = null;
+      }
+      if (u2State.nodes.length === 0) {
+        u2RenderList(`Recorrido finalizado inmediatamente: inicio == null (lista vacía).`, `warn`);
+        return;
+      }
+      let idx = 0;
+      u2State.highlightIdx = 0;
+      u2RenderList(`Recorriendo recursivamente: visitando nodo [0] "${u2State.nodes[0].name}" (${u2State.nodes[0].addr})…`);
+      u2State.traverseTimer = setInterval(function () {
+        idx += 1;
+        if (idx >= u2State.nodes.length) {
+          clearInterval(u2State.traverseTimer);
+          u2State.traverseTimer = null;
+          u2State.highlightIdx = -1;
+          const tail = u2State.mode === `circular`
+            ? `fin.Siguiente apunta nuevamente a inicio (ciclo completado).`
+            : `Siguiente == null → condición de corte alcanzada.`;
+          u2RenderList(`Recorrido completo (${u2State.nodes.length} nodos): ${tail}`, `ok`);
+          return;
+        }
+        u2State.highlightIdx = idx;
+        u2RenderList(`Recorriendo nodo [${idx}] "${u2State.nodes[idx].name}" (${u2State.nodes[idx].addr})…`);
+      }, 520);
+    }
+
+    function u2RenderList(statusText, statusKind) {
+      const stage = document.getElementById(`u2-svg-stage`);
+      const st = document.getElementById(`u2-op-status`);
+      if (st && statusText) {
+        st.className = statusKind ? `status-banner ${statusKind}` : `status-banner`;
+        st.textContent = statusText;
+      }
+      if (!stage) return;
+
+      const nodes = u2State.nodes;
+      if (nodes.length === 0) {
+        stage.innerHTML = `
+          <svg viewBox="0 0 640 130" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Lista vacía">
+            <rect x="20" y="34" width="110" height="44" fill="var(--surface-container)" stroke="var(--outline)" stroke-width="1.5"/>
+            <text x="75" y="61" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="13" fill="var(--primary)">inicio = null</text>
+          </svg>
+        `;
+        return;
+      }
+
+      const boxW = 112;
+      const gap = 36;
+      const startX = 24;
+      const y = 46;
+      const totalW = Math.max(640, startX + nodes.length * (boxW + gap) + 95);
+      const h = u2State.mode === `circular` ? 175 : 145;
+
+      let svg = `<svg viewBox="0 0 ${totalW} ${h}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Diagrama de nodos en memoria">`;
+      svg += `<defs>
+        <marker id="arrow-navy" markerWidth="8" markerHeight="8" refX="7" refY="3.5" orient="auto">
+          <polygon points="0 0, 8 3.5, 0 7" fill="var(--primary)"/>
+        </marker>
+        <marker id="arrow-green" markerWidth="8" markerHeight="8" refX="7" refY="3.5" orient="auto">
+          <polygon points="0 0, 8 3.5, 0 7" fill="var(--secondary)"/>
+        </marker>
+      </defs>`;
+
+      // Puntero inicial
+      const headLabel = u2State.mode === `pila` ? `Cima` : u2State.mode === `cola` ? `Frente` : `inicio`;
+      svg += `<text x="${startX + boxW / 2}" y="20" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" font-weight="600" fill="var(--tertiary)">${headLabel}</text>`;
+      svg += `<line x1="${startX + boxW / 2}" y1="25" x2="${startX + boxW / 2}" y2="${y - 4}" stroke="var(--tertiary)" stroke-width="2" marker-end="url(#arrow-navy)"/>`;
+
+      if (u2State.mode === `circular` || u2State.mode === `cola`) {
+        const lastX = startX + (nodes.length - 1) * (boxW + gap) + boxW / 2;
+        svg += `<text x="${lastX}" y="20" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" font-weight="600" fill="var(--secondary)">fin</text>`;
+        svg += `<line x1="${lastX}" y1="25" x2="${lastX}" y2="${y - 4}" stroke="var(--secondary)" stroke-width="2" marker-end="url(#arrow-green)"/>`;
+      }
+
+      if (u2State.mode === `doble`) {
+        svg += `<text x="${startX - 4}" y="${y + 42}" text-anchor="start" font-family="JetBrains Mono, monospace" font-size="11" fill="var(--on-surface-variant)">Ant=null</text>`;
+      }
+
+      nodes.forEach(function (node, i) {
+        const x = startX + i * (boxW + gap);
+        const isActive = i === u2State.highlightIdx;
+        const fill = isActive ? `var(--primary-container)` : `var(--surface-container-low)`;
+        const stroke = isActive ? `var(--primary)` : `var(--outline)`;
+
+        svg += `<rect x="${x}" y="${y}" width="${boxW}" height="56" fill="${fill}" stroke="${stroke}" stroke-width="${isActive ? 2.5 : 1.5}"/>`;
+        svg += `<line x1="${x}" y1="${y + 22}" x2="${x + boxW}" y2="${y + 22}" stroke="var(--outline-variant)" stroke-width="1"/>`;
+        svg += `<text x="${x + 8}" y="${y + 15}" font-family="JetBrains Mono, monospace" font-size="11" fill="var(--on-surface-variant)">${node.addr}</text>`;
+        svg += `<text x="${x + boxW / 2}" y="${y + 44}" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="600" fill="var(--on-surface)">${node.name}</text>`;
+
+        if (i < nodes.length - 1) {
+          const x1 = x + boxW;
+          const x2 = x + boxW + gap - 4;
+          const midY = u2State.mode === `doble` ? y + 22 : y + 28;
+          svg += `<line x1="${x1}" y1="${midY}" x2="${x2}" y2="${midY}" stroke="var(--primary)" stroke-width="1.8" marker-end="url(#arrow-navy)"/>`;
+          if (u2State.mode === `doble`) {
+            svg += `<line x1="${x + boxW + gap}" y1="${y + 38}" x2="${x + boxW + 4}" y2="${y + 38}" stroke="var(--secondary)" stroke-width="1.6" marker-end="url(#arrow-green)"/>`;
+          }
+        } else {
+          if (u2State.mode === `circular`) {
+            const xEnd = x + boxW;
+            const yLoop = y + 95;
+            svg += `<path d="M ${xEnd} ${y + 28} L ${xEnd + 22} ${y + 28} L ${xEnd + 22} ${yLoop} L ${startX + boxW / 2} ${yLoop} L ${startX + boxW / 2} ${y + 62}" fill="none" stroke="var(--secondary)" stroke-width="2" marker-end="url(#arrow-green)"/>`;
+            svg += `<text x="${(startX + xEnd) / 2}" y="${yLoop + 16}" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="var(--secondary)">fin.Siguiente → inicio</text>`;
+          } else {
+            const nx = x + boxW;
+            svg += `<line x1="${nx}" y1="${y + 28}" x2="${nx + 28}" y2="${y + 28}" stroke="var(--primary)" stroke-width="1.8" marker-end="url(#arrow-navy)"/>`;
+            svg += `<text x="${nx + 34}" y="${y + 32}" font-family="JetBrains Mono, monospace" font-size="12" font-weight="600" fill="var(--error)">null</text>`;
+          }
+        }
+      });
+
+      svg += `</svg>`;
+      stage.innerHTML = svg;
+    }
+
+    /* ==========================================================================
+       UNIDAD 2B: TRAZADOR RECURSIVO FACTORIAL(N)
+       ========================================================================== */
+    const u2Fact = {
+      n: 4,
+      step: 0,
+      timeline: []
+    };
+
+    function u2InitFact() {
+      const inp = document.getElementById(`u2-fact-n`);
+      let n = inp ? parseInt(inp.value, 10) : 4;
+      if (isNaN(n) || n < 1) n = 1;
+      if (n > 6) n = 6;
+      if (inp) inp.value = n;
+
+      u2Fact.n = n;
+      u2Fact.step = 0;
+      u2Fact.timeline = [];
+
+      const frames = [];
+      for (let k = n; k >= 1; k--) {
+        frames.push({ n: k, state: `wait`, ret: null });
+        u2Fact.timeline.push({
+          frames: frames.map(function (f) { return Object.assign({}, f); }),
+          msg: k === 1
+            ? `Invocación Factorial(1): cumple condición de corte (n <= 1) → devuelve 1.`
+            : `Invocación Factorial(${k}): apilado en memoria; espera Factorial(${k - 1}).`
+        });
+      }
+      let acc = 1;
+      frames[frames.length - 1].state = `base`;
+      frames[frames.length - 1].ret = 1;
+      u2Fact.timeline[u2Fact.timeline.length - 1].frames = frames.map(function (f) { return Object.assign({}, f); });
+
+      for (let idx = frames.length - 2; idx >= 0; idx--) {
+        acc = frames[idx].n * acc;
+        frames[idx].state = `ret`;
+        frames[idx].ret = acc;
+        u2Fact.timeline.push({
+          frames: frames.slice(0, idx + 1).map(function (f) { return Object.assign({}, f); }),
+          msg: `Camino de retorno a Factorial(${frames[idx].n}): ${frames[idx].n} × ${acc / frames[idx].n} = ${acc}.`
+        });
+      }
+
+      u2RenderFact();
+    }
+
+    function u2StepFact() {
+      if (!u2Fact.timeline.length) {
+        u2InitFact();
+      }
+      if (u2Fact.step < u2Fact.timeline.length) {
+        u2Fact.step += 1;
+      } else {
+        u2Fact.step = 1;
+      }
+      u2RenderFact();
+    }
+
+    function u2RenderFact() {
+      const view = document.getElementById(`u2-stack-view`);
+      const st = document.getElementById(`u2-fact-status`);
+      if (!view || !st) return;
+
+      if (u2Fact.step === 0 || !u2Fact.timeline.length) {
+        view.innerHTML = `<div class="stack-frame"><span>Listo para invocar Factorial(${u2Fact.n})</span><span>esperando</span></div>`;
+        st.className = `status-banner`;
+        st.textContent = `Pulsa “Siguiente paso” para observar cómo crece la pila hasta la condición de parada y luego retorna acumulando el producto.`;
+        return;
+      }
+
+      const safeIdx = Math.min(Math.max(u2Fact.step - 1, 0), u2Fact.timeline.length - 1);
+      const snap = u2Fact.timeline[safeIdx];
+      if (!snap || !Array.isArray(snap.frames)) return;
+      view.innerHTML = snap.frames.map(function (f) {
+        const cls = f.state === `base` ? `stack-frame base-case` : f.state === `ret` ? `stack-frame returning` : `stack-frame`;
+        const right = f.ret !== null ? `retorna ${f.ret}` : `esperando F(${f.n - 1})`;
+        return `<div class="${cls}"><span>Factorial(${f.n})</span><span>${right}</span></div>`;
+      }).join(``);
+
+      const isFinal = u2Fact.step === u2Fact.timeline.length;
+      st.className = isFinal ? `status-banner ok` : `status-banner`;
+      st.textContent = snap.msg;
+    }
+
+    /* ==========================================================================
+       UNIDAD 3: EXPLORADOR DE ÁRBOL BINARIO DE BÚSQUEDA
+       ========================================================================== */
+    const u3DefaultValues = [50, 30, 70, 20, 40, 60, 80, 10, 25, 35, 65];
+    const u3State = {
+      root: null,
+      activeVal: null,
+      visited: [],
+      timer: null
+    };
+
+    function u3CreateNode(val) {
+      return { val: val, left: null, right: null };
+    }
+
+    function u3InsertRaw(node, val) {
+      if (!node) return u3CreateNode(val);
+      if (val < node.val) node.left = u3InsertRaw(node.left, val);
+      else if (val > node.val) node.right = u3InsertRaw(node.right, val);
+      return node;
+    }
+
+    function u3Reset() {
+      if (u3State.timer) {
+        clearInterval(u3State.timer);
+        u3State.timer = null;
+      }
+      u3State.root = null;
+      u3State.activeVal = null;
+      u3State.visited = [];
+      u3DefaultValues.forEach(function (v) {
+        u3State.root = u3InsertRaw(u3State.root, v);
+      });
+      u3RenderTree(`Árbol equilibrado de altura 4 restaurado. Selecciona un recorrido o busca/inserta un valor entero.`);
+    }
+
+    function u3Insert() {
+      const inp = document.getElementById(`u3-val-input`);
+      const st = document.getElementById(`u3-tree-status`);
+      if (!inp || !st) return;
+      const val = parseInt(inp.value, 10);
+      if (isNaN(val) || val < 1 || val > 99) {
+        st.className = `status-banner err`;
+        st.textContent = `Ingresa un entero válido entre 1 y 99.`;
+        return;
+      }
+      if (u3State.timer) { clearInterval(u3State.timer); u3State.timer = null; }
+      const existed = u3PathTo(u3State.root, val).found;
+      if (existed) {
+        u3State.activeVal = val;
+        u3State.visited = [val];
+        u3RenderTree(`El valor ${val} ya existe en el árbol binario (no se admiten duplicados).`, `warn`);
+        return;
+      }
+      u3State.root = u3InsertRaw(u3State.root, val);
+      u3State.activeVal = val;
+      u3State.visited = u3PathTo(u3State.root, val).path;
+      u3RenderTree(`Nodo ${val} insertado respetando la regla ABB (izquierda < raíz < derecha).`, `ok`);
+    }
+
+    function u3PathTo(node, target) {
+      const path = [];
+      let curr = node;
+      while (curr) {
+        path.push(curr.val);
+        if (target === curr.val) return { found: true, path: path };
+        curr = target < curr.val ? curr.left : curr.right;
+      }
+      return { found: false, path: path };
+    }
+
+    function u3Search() {
+      const inp = document.getElementById(`u3-val-input`);
+      if (!inp) return;
+      const val = parseInt(inp.value, 10);
+      if (isNaN(val)) return;
+      if (u3State.timer) { clearInterval(u3State.timer); u3State.timer = null; }
+      const res = u3PathTo(u3State.root, val);
+      u3State.visited = res.path;
+      u3State.activeVal = res.found ? val : null;
+      const msg = res.found
+        ? `Valor ${val} encontrado en ${res.path.length} comparaciones. Ruta: ${res.path.join(` → `)}.`
+        : `Valor ${val} no encontrado tras ${res.path.length} comparaciones (${res.path.join(` → `)} → null).`;
+      u3RenderTree(msg, res.found ? `ok` : `err`);
+    }
+
+    function u3CollectOrder(node, kind, out) {
+      if (!node) return;
+      if (kind === `pre`) out.push(node.val);
+      u3CollectOrder(node.left, kind, out);
+      if (kind === `in`) out.push(node.val);
+      u3CollectOrder(node.right, kind, out);
+      if (kind === `post`) out.push(node.val);
+    }
+
+    function u3RunTraversal(kind) {
+      if (u3State.timer) { clearInterval(u3State.timer); u3State.timer = null; }
+      const seq = [];
+      u3CollectOrder(u3State.root, kind, seq);
+      const label = kind === `pre` ? `Preorden (Raíz–Izq–Der)` : kind === `in` ? `Inorden (Izq–Raíz–Der)` : `Postorden (Izq–Der–Raíz)`;
+      let idx = 0;
+      u3State.visited = [];
+      u3State.activeVal = null;
+
+      u3State.timer = setInterval(function () {
+        if (idx >= seq.length) {
+          clearInterval(u3State.timer);
+          u3State.timer = null;
+          u3State.activeVal = null;
+          u3RenderTree(`${label} completado: [${seq.join(`, `)}]`, `ok`);
+          return;
+        }
+        u3State.activeVal = seq[idx];
+        u3State.visited.push(seq[idx]);
+        u3RenderTree(`${label} → [${u3State.visited.join(`, `)}]`);
+        idx += 1;
+      }, 360);
+    }
+
+    function u3ComputeStats(node) {
+      if (!node) return { height: 0, leaves: 0, sum: 0, oddSum: 0 };
+      const l = u3ComputeStats(node.left);
+      const r = u3ComputeStats(node.right);
+      const isLeaf = !node.left && !node.right ? 1 : 0;
+      const odd = node.val % 2 !== 0 ? node.val : 0;
+      return {
+        height: 1 + Math.max(l.height, r.height),
+        leaves: isLeaf + l.leaves + r.leaves,
+        sum: node.val + l.sum + r.sum,
+        oddSum: odd + l.oddSum + r.oddSum
+      };
+    }
+
+    function u3RenderTree(statusText, statusKind) {
+      const stage = document.getElementById(`u3-tree-stage`);
+      const st = document.getElementById(`u3-tree-status`);
+      if (st && statusText) {
+        st.className = statusKind ? `status-banner ${statusKind}` : `status-banner`;
+        st.textContent = statusText;
+      }
+
+      const stats = u3ComputeStats(u3State.root);
+      const mh = document.getElementById(`u3-metric-height`);
+      const ml = document.getElementById(`u3-metric-leaves`);
+      const ms = document.getElementById(`u3-metric-sum`);
+      const mo = document.getElementById(`u3-metric-odd`);
+      if (mh) mh.textContent = `${stats.height}`;
+      if (ml) ml.textContent = `${stats.leaves}`;
+      if (ms) ms.textContent = `${stats.sum}`;
+      if (mo) mo.textContent = `${stats.oddSum}`;
+
+      if (!stage) return;
+
+      const coords = [];
+      const edges = [];
+      const width = 620;
+      const levelH = 58;
+
+      function place(node, depth, xMin, xMax, parentPos) {
+        if (!node || depth > 5) return;
+        const x = (xMin + xMax) / 2;
+        const y = 30 + depth * levelH;
+        const pos = { val: node.val, x: x, y: y };
+        coords.push(pos);
+        if (parentPos) edges.push({ x1: parentPos.x, y1: parentPos.y, x2: x, y2: y });
+        place(node.left, depth + 1, xMin, x, pos);
+        place(node.right, depth + 1, x, xMax, pos);
+      }
+
+      place(u3State.root, 0, 20, width - 20, null);
+      const svgH = Math.max(220, stats.height * levelH + 30);
+      let svg = `<svg viewBox="0 0 ${width} ${svgH}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Árbol binario de búsqueda">`;
+
+      edges.forEach(function (e) {
+        svg += `<line x1="${e.x1}" y1="${e.y1}" x2="${e.x2}" y2="${e.y2}" stroke="var(--outline-variant)" stroke-width="1.8"/>`;
+      });
+
+      coords.forEach(function (c) {
+        const isCurrent = c.val === u3State.activeVal;
+        const isVisited = u3State.visited.indexOf(c.val) !== -1;
+        const fill = isCurrent ? `var(--primary)` : isVisited ? `var(--positive-surface)` : `var(--surface-container-low)`;
+        const stroke = isCurrent ? `var(--primary)` : isVisited ? `var(--secondary)` : `var(--outline)`;
+        const textFill = isCurrent ? `var(--on-primary)` : `var(--on-surface)`;
+
+        svg += `<circle cx="${c.x}" cy="${c.y}" r="18" fill="${fill}" stroke="${stroke}" stroke-width="${isCurrent ? 2.5 : 1.6}"/>`;
+        svg += `<text x="${c.x}" y="${c.y + 4}" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" font-weight="600" fill="${textFill}">${c.val}</text>`;
+      });
+
+      svg += `</svg>`;
+      stage.innerHTML = svg;
+    }
+
+    /* ==========================================================================
+       UNIDAD 4: SIMULADOR DE ACCESO SECUENCIAL VS DIRECTO EN DISCO
+       ========================================================================== */
+    const u4Records = [
+      { pos: 0, leg: `1001`, nom: `Acosta` },
+      { pos: 1, leg: `1009`, nom: `Benítez` },
+      { pos: 2, leg: `1018`, nom: `Castro` },
+      { pos: 3, leg: `1025`, nom: `Díaz` },
+      { pos: 4, leg: `1033`, nom: `Ferreyra` },
+      { pos: 5, leg: `1042`, nom: `Gómez` },
+      { pos: 6, leg: `1060`, nom: `López` },
+      { pos: 7, leg: `1095`, nom: `Sosa` }
+    ];
+
+    function u4RenderDisk(scannedUpTo, targetPos, directOnly) {
+      const track = document.getElementById(`u4-disk-track`);
+      if (!track) return;
+      track.innerHTML = u4Records.map(function (r) {
+        let cls = `disk-cell`;
+        if (r.pos === targetPos) cls += ` target`;
+        else if (!directOnly && r.pos < scannedUpTo) cls += ` scanned`;
+        return `<div class="${cls}"><div>Pos #${r.pos}</div><div>Leg ${r.leg}</div><div>${r.nom}</div></div>`;
+      }).join(``);
+    }
+
+    function u4Simulate(mode) {
+      const sel = document.getElementById(`u4-target-idx`);
+      const readsEl = document.getElementById(`u4-reads-count`);
+      const offEl = document.getElementById(`u4-byte-offset`);
+      const st = document.getElementById(`u4-file-status`);
+      if (!sel || !readsEl || !offEl || !st) return;
+
+      const target = parseInt(sel.value, 10);
+      const recordBytes = 64;
+      const offset = target * recordBytes;
+
+      if (mode === `secuencial`) {
+        const reads = target + 1;
+        u4RenderDisk(target, target, false);
+        readsEl.textContent = `${reads}`;
+        offEl.textContent = `0 → ${offset} B`;
+        st.className = `status-banner warn`;
+        st.textContent = `Acceso Secuencial: debió recorrer desde el inicio leyendo ${reads} registro(s) hasta hallar Pos #${target} (${u4Records[target].nom}).`;
+      } else {
+        u4RenderDisk(-1, target, true);
+        readsEl.textContent = `1`;
+        offEl.textContent = `${offset} B`;
+        st.className = `status-banner ok`;
+        st.textContent = `Acceso Directo: FileStream.Seek(${target} * 64 = ${offset} bytes) saltó directamente en 1 sola operación de lectura.`;
+      }
+    }
+
+    /* ==========================================================================
+       UNIDAD 5: SIMULADOR DE CORTE DE CONTROL Y APAREO SECUENCIAL
+       ========================================================================== */
+    const u5CorteData = [
+      { uni: `UAI`, fac: `TI`, car: `Ing. Sist.`, leg: `201`, mat: `Prog1` },
+      { uni: `UAI`, fac: `TI`, car: `Ing. Sist.`, leg: `201`, mat: `BD1` },
+      { uni: `UAI`, fac: `TI`, car: `Ing. Sist.`, leg: `205`, mat: `Prog1` },
+      { uni: `UAI`, fac: `TI`, car: `Lic. Sist.`, leg: `310`, mat: `Redes` },
+      { uni: `UAI`, fac: `Eco`, car: `Contador`, leg: `412`, mat: `Cont1` }
+    ];
+
+    const u5Alumnos = [
+      { leg: 101, nom: `Ana` },
+      { leg: 104, nom: `Bruno` },
+      { leg: 107, nom: `Carla` }
+    ];
+    const u5Notas = [
+      { leg: 101, mat: `P1`, nota: 9 },
+      { leg: 102, mat: `P1`, nota: 7 },
+      { leg: 104, mat: `P1`, nota: 8 }
+    ];
+
+    const u5State = {
+      mode: `corte`,
+      corteIdx: 0,
+      antUni: null,
+      antFac: null,
+      antCar: null,
+      antLeg: null,
+      cCar: 0,
+      cFac: 0,
+      cUni: 0,
+      cTot: 0,
+      apI: 0,
+      apJ: 0,
+      logs: []
+    };
+
+    function u5SetMode(mode) {
+      u5State.mode = mode;
+      const bC = document.getElementById(`u5-tab-corte`);
+      const bA = document.getElementById(`u5-tab-apareo`);
+      if (bC) bC.classList.toggle(`active`, mode === `corte`);
+      if (bA) bA.classList.toggle(`active`, mode === `apareo`);
+      u5Reset();
+    }
+
+    function u5Reset() {
+      u5State.corteIdx = 0;
+      u5State.antUni = null;
+      u5State.antFac = null;
+      u5State.antCar = null;
+      u5State.antLeg = null;
+      u5State.cCar = 0;
+      u5State.cFac = 0;
+      u5State.cUni = 0;
+      u5State.cTot = 0;
+      u5State.apI = 0;
+      u5State.apJ = 0;
+      u5State.logs = [u5State.mode === `corte`
+        ? `Listo para leer archivo secuencial ordenado por Universidad > Facultad > Carrera > Legajo.`
+        : `Listo para aparear Alumnos (A) y Notas (B) ordenados por Legajo.`];
+      u5Render();
+    }
+
+    function u5Step() {
+      if (u5State.mode === `corte`) {
+        if (u5State.corteIdx > u5CorteData.length) return;
+
+        if (u5State.corteIdx === u5CorteData.length) {
+          if (u5State.antCar !== null) {
+            u5State.logs.push(`EOF → Subtotal Carrera ${u5State.antCar}: ${u5State.cCar} alumno(s).`);
+            u5State.logs.push(`EOF → Subtotal Facultad ${u5State.antFac}: ${u5State.cFac} alumno(s).`);
+            u5State.logs.push(`EOF → Subtotal Universidad ${u5State.antUni}: ${u5State.cUni} alumno(s).`);
+            u5State.logs.push(`TOTAL GENERAL EN EL PAÍS: ${u5State.cTot} alumno(s).`);
+          }
+          u5State.corteIdx += 1;
+          u5Render();
+          return;
+        }
+
+        const r = u5CorteData[u5State.corteIdx];
+        if (u5State.antUni === null) {
+          u5State.antUni = r.uni;
+          u5State.antFac = r.fac;
+          u5State.antCar = r.car;
+          u5State.antLeg = r.leg;
+          u5State.cCar = 1; u5State.cFac = 1; u5State.cUni = 1; u5State.cTot = 1;
+          u5State.logs.push(`Lectura inicial [${r.uni} | ${r.fac} | ${r.car} | Leg.${r.leg}]: primer alumno contabilizado.`);
+        } else {
+          if (r.uni !== u5State.antUni || r.fac !== u5State.antFac || r.car !== u5State.antCar) {
+            u5State.logs.push(`CORTE Carrera (${u5State.antCar}): ${u5State.cCar} alumno(s).`);
+            u5State.cCar = 0;
+            u5State.antCar = r.car;
+            u5State.antLeg = null;
+          }
+          if (r.uni !== u5State.antUni || r.fac !== u5State.antFac) {
+            u5State.logs.push(`CORTE Facultad (${u5State.antFac}): ${u5State.cFac} alumno(s).`);
+            u5State.cFac = 0;
+            u5State.antFac = r.fac;
+          }
+          if (r.uni !== u5State.antUni) {
+            u5State.logs.push(`CORTE Universidad (${u5State.antUni}): ${u5State.cUni} alumno(s).`);
+            u5State.cUni = 0;
+            u5State.antUni = r.uni;
+          }
+
+          if (r.leg !== u5State.antLeg) {
+            u5State.cCar += 1;
+            u5State.cFac += 1;
+            u5State.cUni += 1;
+            u5State.cTot += 1;
+            u5State.antLeg = r.leg;
+            u5State.logs.push(`Nuevo alumno Leg.${r.leg} (${r.mat}) → contadores +1.`);
+          } else {
+            u5State.logs.push(`Mismo alumno Leg.${r.leg} inscripto en ${r.mat} → no duplica conteo.`);
+          }
+        }
+        u5State.corteIdx += 1;
+      } else {
+        const i = u5State.apI;
+        const j = u5State.apJ;
+        if (i >= u5Alumnos.length && j >= u5Notas.length) return;
+
+        const keyA = i < u5Alumnos.length ? u5Alumnos[i].leg : 999999;
+        const keyB = j < u5Notas.length ? u5Notas[j].leg : 999999;
+
+        if (keyA < keyB) {
+          u5State.logs.push(`Legajo A (${keyA}) < Legajo B (${keyB === 999999 ? `EOF` : keyB}): ${u5Alumnos[i].nom} sin notas registradas. Avanza A.`);
+          u5State.apI += 1;
+        } else if (keyB < keyA) {
+          u5State.logs.push(`Legajo B (${keyB}) < Legajo A (${keyA === 999999 ? `EOF` : keyA}): nota huérfana (${u5Notas[j].nota}). Avanza B.`);
+          u5State.apJ += 1;
+        } else {
+          u5State.logs.push(`MATCH! Legajo ${keyA} (${u5Alumnos[i].nom}) rindió ${u5Notas[j].mat} con nota ${u5Notas[j].nota}. Avanzan A y B.`);
+          u5State.apI += 1;
+          u5State.apJ += 1;
+        }
+      }
+      u5Render();
+    }
+
+    function u5RunAll() {
+      let guard = 0;
+      while (guard < 25) {
+        if (u5State.mode === `corte` && u5State.corteIdx > u5CorteData.length) break;
+        if (u5State.mode === `apareo` && u5State.apI >= u5Alumnos.length && u5State.apJ >= u5Notas.length) break;
+        u5Step();
+        guard += 1;
+      }
+    }
+
+    function u5Render() {
+      const stage = document.getElementById(`u5-stage`);
+      const con = document.getElementById(`u5-console`);
+      if (!stage || !con) return;
+
+      if (u5State.mode === `corte`) {
+        let rows = u5CorteData.map(function (r, idx) {
+          const cls = idx === u5State.corteIdx ? `row-active` : idx < u5State.corteIdx ? `row-done` : ``;
+          return `<tr class="${cls}"><td>${r.uni}</td><td>${r.fac}</td><td>${r.car}</td><td class="num-col">${r.leg}</td><td>${r.mat}</td></tr>`;
+        }).join(``);
+        stage.innerHTML = `
+          <div class="table-wrap" style="margin: 0;">
+            <table aria-label="Registros de padrón universitario">
+              <thead><tr><th>Universidad</th><th>Facultad</th><th>Carrera</th><th class="num-col">Legajo</th><th>Materia</th></tr></thead>
+              <tbody>${rows}</tbody>
+            </table>
+          </div>
+        `;
+      } else {
+        const rowsA = u5Alumnos.map(function (a, idx) {
+          const cls = idx === u5State.apI ? `row-active` : idx < u5State.apI ? `row-done` : ``;
+          return `<tr class="${cls}"><td class="num-col">${a.leg}</td><td>${a.nom}</td></tr>`;
+        }).join(``);
+        const rowsB = u5Notas.map(function (n, idx) {
+          const cls = idx === u5State.apJ ? `row-active` : idx < u5State.apJ ? `row-done` : ``;
+          return `<tr class="${cls}"><td class="num-col">${n.leg}</td><td>${n.mat}</td><td class="num-col">${n.nota}</td></tr>`;
+        }).join(``);
+        stage.innerHTML = `
+          <div class="dual-file-grid">
+            <div class="table-wrap" style="margin: 0;">
+              <table aria-label="Archivo Alumnos">
+                <thead><tr><th class="num-col">Legajo A</th><th>Alumno</th></tr></thead>
+                <tbody>${rowsA}</tbody>
+              </table>
+            </div>
+            <div class="table-wrap" style="margin: 0;">
+              <table aria-label="Archivo Notas">
+                <thead><tr><th class="num-col">Legajo B</th><th>Materia</th><th class="num-col">Nota</th></tr></thead>
+                <tbody>${rowsB}</tbody>
+              </table>
+            </div>
+          </div>
+        `;
+      }
+
+      con.innerHTML = u5State.logs.map(function (line) {
+        return `<div>&gt; ${line}</div>`;
+      }).join(``);
+      con.scrollTop = con.scrollHeight;
+    }
+
+    /* ==========================================================================
+       UNIDAD 6: COMPARADOR DE PARADIGMAS Y TRAZADOR LÓGICO
+       ========================================================================== */
+    const u6Paradigms = {
+      estructurado: {
+        id: `est`,
+        title: `Paradigma Estructurado (C / Pascal)`,
+        summary: `Organiza la lógica en funciones secuenciales con estructuras de selección e iteración, separando los datos de los procedimientos que los manipulan.`,
+        code: `void EvaluarAlumno(int nota) {\n  if (nota >= 4) {\n    printf("Aprobado");\n  } else {\n    printf("Desaprobado");\n  }\n}`
+      },
+      eventos: {
+        id: `eve`,
+        title: `Paradigma Orientado a Eventos (C# WinForms)`,
+        summary: `El programa permanece en espera hasta que una acción del usuario o del sistema dispara un evento (Click, Load, Tick) asociado a un manejador.`,
+        code: `private void btnEvaluar_Click(object sender, EventArgs e) {\n  int nota = int.Parse(txtNota.Text);\n  lblResultado.Text = (nota >= 4) ? "Aprobado" : "Desaprobado";\n}`
+      },
+      poo: {
+        id: `poo`,
+        title: `Paradigma Orientado a Objetos (C# / Java)`,
+        summary: `Encapsula estado y comportamiento en Clases e Instancias; habilita herencia, polimorfismo y reutilización mediante interfaces públicas.`,
+        code: `public class Alumno : Persona {\n  private int nota;\n  public Alumno(string nombre, int nota) : base(nombre) { this.nota = nota; }\n  public override string Estado() =&gt; nota >= 4 ? "Aprobado" : "Desaprobado";\n}`
+      },
+      logico: {
+        id: `log`,
+        title: `Paradigma Lógico (Prolog)`,
+        summary: `No indica cómo iterar paso a paso: declara hechos y reglas. El motor responde goals mediante unificación, backtracking y fail.`,
+        code: `nota(ana, 8).\naprobado(X) :- nota(X, N), N >= 4.\n?- aprobado(ana).  % True`
+      }
+    };
+
+    function u6ShowParadigm(key) {
+      const p = u6Paradigms[key];
+      if (!p) return;
+      Object.keys(u6Paradigms).forEach(function (k) {
+        const b = document.getElementById(`u6-p-${u6Paradigms[k].id}`);
+        if (b) b.classList.toggle(`active`, k === key);
+      });
+      const sum = document.getElementById(`u6-paradigm-summary`);
+      const tit = document.getElementById(`u6-code-title`);
+      const body = document.getElementById(`u6-code-body`);
+      if (sum) sum.innerHTML = `<h4>${p.title}</h4><p style="margin-bottom:0;">${p.summary}</p>`;
+      if (tit) tit.textContent = p.title;
+      if (body) body.textContent = p.code.replace(/&gt;/g, `>`).replace(/&lt;/g, `<`);
+    }
+
+    const u6LogicTimeline = [
+      { cls: `ok`, text: `1. Unificación inicial: X = ana → nota(ana, 8) y 8 >= 4 (Éxito).`, status: `El motor encontró la primera solución: X = ana.` },
+      { cls: `ok`, text: `2. Ejecutar registrar(ana) → imprime "ana aprobada".`, status: `Acción lateral ejecutada; ahora continúa hacia fail.` },
+      { cls: `fail`, text: `3. Predicado fail: fuerza fracaso artificial para buscar más soluciones.`, status: `fail impide que la consulta termine y activa el backtracking.` },
+      { cls: `back`, text: `4. Backtracking → prueba X = luis: nota(luis, 3), pero 3 >= 4 es FALSO.`, status: `La regla falla naturalmente para luis; retrocede al siguiente hecho.` },
+      { cls: `ok`, text: `5. Backtracking → prueba X = sofia: nota(sofia, 9) y 9 >= 4 (Éxito) → registra "sofia".`, status: `Segunda solución encontrada y procesada antes del siguiente fail.` },
+      { cls: `fail`, text: `6. Nuevo fail → sin más hechos en la base. Búsqueda exhaustiva finalizada.`, status: `Todas las soluciones válidas fueron enumeradas mediante backtracking + fail.` }
+    ];
+    let u6LogicIdx = 0;
+
+    function u6LogicReset() {
+      u6LogicIdx = 0;
+      const box = document.getElementById(`u6-logic-trace`);
+      const st = document.getElementById(`u6-logic-status`);
+      if (box) box.innerHTML = `<div class="logic-row">Goal activo: ?- aprobado(X), registrar(X), fail.</div>`;
+      if (st) {
+        st.className = `status-banner`;
+        st.textContent = `Pulsa “Siguiente paso de inferencia” para ver cómo el motor evalúa cada hecho, falla en luis y usa fail para forzar el backtracking.`;
+      }
+    }
+
+    function u6LogicStep() {
+      if (u6LogicIdx < u6LogicTimeline.length) {
+        u6LogicIdx += 1;
+      } else {
+        u6LogicIdx = 1;
+      }
+      const box = document.getElementById(`u6-logic-trace`);
+      const st = document.getElementById(`u6-logic-status`);
+      if (!box || !st) return;
+
+      const slice = u6LogicTimeline.slice(0, u6LogicIdx);
+      box.innerHTML = slice.map(function (item) {
+        return `<div class="logic-row ${item.cls}">${item.text}</div>`;
+      }).join(``);
+
+      const last = slice[slice.length - 1];
+      st.className = u6LogicIdx === u6LogicTimeline.length ? `status-banner ok` : `status-banner`;
+      st.textContent = last.status;
+    }
+
+    /* ==========================================================================
+       INICIALIZACIÓN GLOBAL AL CARGAR EL DOCUMENTO
+       ========================================================================== */
+    function initAllInteractiveModules() {
+      u1RenderScenario();
+      u2RenderList(`Lista Simplemente Enlazada inicializada con 3 nodos en memoria.`);
+      u2InitFact();
+      u3Reset();
+      u4Simulate(`secuencial`);
+      u5Reset();
+      u6ShowParadigm(`estructurado`);
+      u6LogicReset();
+    }
+
+    if (document.readyState === `loading`) {
+      document.addEventListener(`DOMContentLoaded`, initAllInteractiveModules);
+    } else {
+      initAllInteractiveModules();
+    }
+  </script>
+</body>
+</html>
